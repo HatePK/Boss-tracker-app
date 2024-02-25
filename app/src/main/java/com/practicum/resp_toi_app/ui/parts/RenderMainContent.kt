@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,137 +35,150 @@ import com.practicum.resp_toi_app.ui.theme.cardNoActiveColor
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.theme.progressBarBackground
 import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
+import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
+import eu.bambooapps.material3.pullrefresh.PullRefreshState
+import eu.bambooapps.material3.pullrefresh.pullRefresh
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RenderMainContent(data: List<BossEntity>) {
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .background(brush = gradientBackGroundBrush)
-    ) {
-        item {
-            Text(
-                modifier = Modifier.padding(5.dp, vertical = 10.dp),
-                text = "Страница обновляется автоматически раз в минуту. Чтобы обновить принудительно, потяните вверх.",
-                style = TextStyle(fontSize = 14.sp),
-                color = TextNoActive
-            )
-        }
-        items(data) {
-            if (it.timeFromDeath > 1080) {
-                val progressPercentage by remember {
-                    mutableFloatStateOf(countPercentage(it.timeFromDeath))
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(vertical = 5.dp),
-                    elevation = CardDefaults.cardElevation()
-                ) {
-                    Row(
+fun RenderMainContent(data: List<BossEntity>, refreshing: Boolean, pullRefreshState: PullRefreshState) {
+    Box() {
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState)
+            .background(brush = gradientBackGroundBrush)
+        ) {
+            item {
+                Text(
+                    modifier = Modifier.padding(5.dp, vertical = 10.dp),
+                    text = "Страница обновляется автоматически раз в минуту. Чтобы обновить принудительно, потяните вверх.",
+                    style = TextStyle(fontSize = 14.sp),
+                    color = TextNoActive
+                )
+            }
+            items(data) {
+                if (it.timeFromDeath > 1080) {
+                    val progressPercentage by remember {
+                        mutableFloatStateOf(countPercentage(it.timeFromDeath))
+                    }
+                    Card(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(brush = cardActiveBackground)
-                            .padding(
-                                start = 20.dp,
-                                end = 12.dp,
-                                top = 14.dp,
-                                bottom = 14.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(vertical = 5.dp),
+                        elevation = CardDefaults.cardElevation()
                     ) {
-                        Column(
-                            modifier = Modifier.weight(0.3f),
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(brush = cardActiveBackground)
+                                .padding(
+                                    start = 20.dp,
+                                    end = 12.dp,
+                                    top = 14.dp,
+                                    bottom = 14.dp
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                style = TextStyle(fontSize = 30.sp),
-                                color = Color.White,
-                                text = it.name
-                            )
-                            Text(
-                                modifier = Modifier.padding(top = 18.dp),
-                                style = TextStyle(fontSize = 16.sp),
-                                color = Color.White,
-                                text = "${it.respStart} - ${it.respEnd} МСК"
-                            )
-                            Text(
-                                modifier = Modifier.padding(top = 18.dp),
-                                style = TextStyle(fontSize = 18.sp),
-                                color = Color.White,
-                                text = "До конца ${countTimeBeforeResp(it.timeFromDeath)}"
-                            )
-                        }
-                        Box(
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                progress = progressPercentage,
-                                modifier = Modifier
-                                    .padding(start = 15.dp, end = 5.dp)
-                                    .size(140.dp),
-                                strokeWidth = 10.dp,
-                                color = progressBarFillColor,
-                                trackColor = progressBarBackground
-                            )
                             Column(
-                                modifier = Modifier.padding(start = 15.dp, end = 5.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                modifier = Modifier.weight(0.3f),
                             ) {
                                 Text(
-                                    text = "Респ идёт уже",
-                                    style = TextStyle(fontSize = 12.sp),
-                                    color = Color.White
+                                    style = TextStyle(fontSize = 30.sp),
+                                    color = Color.White,
+                                    text = it.name
                                 )
                                 Text(
-                                    modifier = Modifier.padding(top = 3.dp),
-                                    text = convertToTime(it.timeFromDeath),
-                                    style = TextStyle(
-                                        fontSize = 28.sp,
-                                        fontWeight = FontWeight.W600
-                                    ),
-                                    color = Color.White
+                                    modifier = Modifier.padding(top = 18.dp),
+                                    style = TextStyle(fontSize = 16.sp),
+                                    color = Color.White,
+                                    text = "${it.respStart} - ${it.respEnd} МСК"
                                 )
+                                Text(
+                                    modifier = Modifier.padding(top = 18.dp),
+                                    style = TextStyle(fontSize = 18.sp),
+                                    color = Color.White,
+                                    text = "До конца ${countTimeBeforeResp(it.timeFromDeath)}"
+                                )
+                            }
+                            Box(
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    progress = progressPercentage,
+                                    modifier = Modifier
+                                        .padding(start = 15.dp, end = 5.dp)
+                                        .size(140.dp),
+                                    strokeWidth = 10.dp,
+                                    color = progressBarFillColor,
+                                    trackColor = progressBarBackground
+                                )
+                                Column(
+                                    modifier = Modifier.padding(start = 15.dp, end = 5.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "Респ идёт уже",
+                                        style = TextStyle(fontSize = 12.sp),
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(top = 3.dp),
+                                        text = convertToTime(it.timeFromDeath),
+                                        style = TextStyle(
+                                            fontSize = 28.sp,
+                                            fontWeight = FontWeight.W600
+                                        ),
+                                        color = Color.White
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = cardNoActiveColor,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(bottom = 5.dp)
-                ){
-                    Column(modifier = Modifier
-                        .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            style = TextStyle(fontSize = 30.sp),
-                            color = TextNoActive,
-                            text = it.name
-                        )
-                        Text(
-                            modifier = Modifier.padding(top = 10.dp),
-                            style = TextStyle(fontSize = 20.sp),
-                            color = TextNoActive,
-                            text = "${it.respStart} - ${it.respEnd} МСК"
-                        )
-                        Text(
-                            modifier = Modifier.padding(top = 10.dp),
-                            style = TextStyle(fontSize = 18.sp),
-                            color = TextNoActive,
-                            text = "Респ начнется через ${countTimeBeforeResp(it.timeFromDeath)}"
-                        )
+                } else {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = cardNoActiveColor,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(bottom = 5.dp)
+                    ){
+                        Column(modifier = Modifier
+                            .fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                style = TextStyle(fontSize = 30.sp),
+                                color = TextNoActive,
+                                text = it.name
+                            )
+                            Text(
+                                modifier = Modifier.padding(top = 10.dp),
+                                style = TextStyle(fontSize = 20.sp),
+                                color = TextNoActive,
+                                text = "${it.respStart} - ${it.respEnd} МСК"
+                            )
+                            Text(
+                                modifier = Modifier.padding(top = 10.dp),
+                                style = TextStyle(fontSize = 18.sp),
+                                color = TextNoActive,
+                                text = "Респ начнется через ${countTimeBeforeResp(it.timeFromDeath)}"
+                            )
+                        }
                     }
                 }
             }
         }
+
+        PullRefreshIndicator(
+            refreshing = refreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
@@ -191,5 +205,11 @@ private fun convertToTime(timeFromDeath: Int) : String {
     val hours = (timeFromDeath - 1080) / 60
     val minutes = (timeFromDeath - 1080) % 60
 
-    return "$hours : $minutes"
+    return "$hours : ${
+        if (minutes < 10) {
+            "0$minutes"
+        } else {
+            minutes
+        }
+    }"
 }
