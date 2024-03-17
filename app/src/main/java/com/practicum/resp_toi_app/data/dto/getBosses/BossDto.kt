@@ -1,4 +1,4 @@
-package com.practicum.resp_toi_app.data.dto
+package com.practicum.resp_toi_app.data.dto.getBosses
 
 data class BossDto(
     val name: String,
