@@ -12,8 +12,10 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 val progressBarFillColor = Color(0xBB9AFF88)
 val progressBarBackground = Color(0x6DD8DBD8)
-val cardNoActiveColor = Color.Black.copy(alpha = 0.3f)
+val cardNoActiveBackground = Color.Black.copy(alpha = 0.2f)
+val backgroundCardColor = Color(0xFF6AA2E9).copy(alpha = 0.3f)
 val TextNoActive = Color(0xFFA2A6B1)
+val transparent = Color.White.copy(alpha = 1.0f)
 
 val gradientBackGroundBrush = Brush.horizontalGradient(
     colors = listOf(Color(4280240768), Color(4280431460)),
