@@ -20,6 +20,9 @@ class PushNotificationService: FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+
+        Log.d("ABOBA", token)
+        SharedPreferencesManager.saveString("Token", token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

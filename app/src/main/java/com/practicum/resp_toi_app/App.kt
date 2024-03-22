@@ -21,17 +21,6 @@ class App: Application() {
         super.onCreate()
         SharedPreferencesManager.init(this)
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@addOnCompleteListener
-            }
-
-            val token = task.result
-            Log.d("ABOBA", token)
-
-            SharedPreferencesManager.saveString("Token", token)
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val audioAttributes = AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
