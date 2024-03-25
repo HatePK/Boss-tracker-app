@@ -29,10 +29,13 @@ class PushNotificationService: FirebaseMessagingService() {
         message.data.let {
             val oneTimeID = SystemClock.uptimeMillis().toInt()
 
-            val fullScreenIntent = Intent(this, NotificationActivity::class.java)
+            val fullScreenIntent = Intent(this, NotificationActivity::class.java).apply {
+                putExtra("title", it["title"])
+                putExtra("body", it["body"])
+            }
 
             val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-                fullScreenIntent, PendingIntent.FLAG_IMMUTABLE)
+                fullScreenIntent, PendingIntent.FLAG_MUTABLE)
 
             var builder = NotificationCompat.Builder(this, "Default")
                 .setSmallIcon(R.drawable.ic_home)

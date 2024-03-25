@@ -59,7 +59,7 @@ fun BottomNavigationBar(navController: NavController, viewModel: MainViewModel) 
                         if (currentRoute == "main") {
                             ExposedMenu(isMenuExpanded, viewModel)
                         } else {
-                            Text(text = vmServer.stringName, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500))
+                            Text(text = vmServer.name, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500))
                         }
                     }},
                 label = {

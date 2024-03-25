@@ -34,6 +34,14 @@ class NotificationActivity() : ComponentActivity() {
         showWhenLockedAndTurnScreenOn()
         super.onCreate(savedInstanceState)
 
+        var title: String? = "RESP-TOI"
+        var body: String? = "Оповещение о смерти РБ"
+
+        if (intent.extras !== null) {
+            title = intent.extras?.getString("title")
+            body = intent.extras?.getString("body")
+        }
+
         setContent {
             Box(
                 modifier = Modifier
@@ -52,7 +60,7 @@ class NotificationActivity() : ComponentActivity() {
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         ),
-                        text = "CABRIO\n только что убили.\nСундук появился!"
+                        text = "$title\n$body"
                     )
                     Icon(
                         Icons.Default.Notifications,

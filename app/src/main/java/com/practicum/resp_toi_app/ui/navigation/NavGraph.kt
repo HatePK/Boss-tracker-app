@@ -20,7 +20,7 @@ fun NavGraph(
             MainScreen(viewModel = viewModel, snackBar = snackBarHostState)
         }
         composable("settings") {
-            RenderSettingsScreen()
+            RenderSettingsScreen(viewModel = viewModel)
         }
     }
 }

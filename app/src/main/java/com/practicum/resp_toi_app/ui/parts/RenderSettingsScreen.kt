@@ -3,6 +3,7 @@ package com.practicum.resp_toi_app.ui.parts
 import android.annotation.SuppressLint
 import android.graphics.drawable.Icon
 import android.os.CountDownTimer
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -50,17 +53,48 @@ import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.theme.transparent
+import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
+import com.practicum.resp_toi_app.ui.viewModel.TestCallState
+import kotlinx.coroutines.flow.observeOn
+import kotlinx.coroutines.flow.onSubscription
 import kotlin.math.round
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ForegroundServiceType")
 @Composable
-fun RenderSettingsScreen() {
+fun RenderSettingsScreen(viewModel: MainViewModel) {
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     var timerButtonEnabled by remember { mutableStateOf(true) }
     var sheetTimerButtonText by remember { mutableStateOf("Запустить") }
-    var timer by remember { mutableStateOf("30")}
+
+    val timer by viewModel.testCallTimer.collectAsState()
+
+    val testCallState = viewModel.testCallState.collectAsState()
+
+    when (testCallState.value) {
+        is TestCallState.Loading -> {
+            timerButtonEnabled = false
+            sheetTimerButtonText = "Отправка запроса..."
+        }
+        is TestCallState.Error -> {
+            Toast.makeText(LocalContext.current, "Ошибка при отправке запроса на сервер", Toast.LENGTH_SHORT).show()
+            viewModel.errorMessageShown()
+        }
+        is TestCallState.InProcess -> {
+            timerButtonEnabled = false
+            sheetTimerButtonText = "Закройте приложение"
+        }
+
+        is TestCallState.EnabledAfterUse -> {
+            sheetTimerButtonText = "Попробовать ещё раз"
+            timerButtonEnabled = true
+        }
+        is TestCallState.EnabledFirstTime -> {
+            timerButtonEnabled = true
+            sheetTimerButtonText = "Запустить"
+        }
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -176,22 +210,7 @@ fun RenderSettingsScreen() {
                             modifier = Modifier.padding(bottom = 60.dp),
                             enabled = timerButtonEnabled,
                             onClick = {
-                                timerButtonEnabled = false
-                                sheetTimerButtonText = "Закройте приложение"
-                                object: CountDownTimer(30000, 1000) {
-                                    override fun onTick(msLost: Long) {
-                                        if (msLost > 10000) {
-                                            timer = (msLost / 1000).toString()
-                                        } else {
-                                            timer = "0${msLost / 1000}"
-                                        }
-                                    }
-                                    override fun onFinish() {
-                                        timer = "30"
-                                        sheetTimerButtonText = "Попробовать ещё раз"
-                                        timerButtonEnabled = true
-                                    }
-                                }.start()
+                                viewModel.setTestCall()
                             }
                         ) {
                             Text(sheetTimerButtonText)

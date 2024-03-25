@@ -33,6 +33,7 @@ fun ExposedMenu(
     viewModel: MainViewModel
 ) {
     val vmServer by viewModel.server.collectAsState()
+    val serverList by viewModel.serverList.collectAsState()
 
     ExposedDropdownMenuBox(
         expanded = isMenuExpanded.value,
@@ -48,30 +49,24 @@ fun ExposedMenu(
                 .menuAnchor()
                 .padding(start = 6.dp)
         ) {
-            Text(text = vmServer.stringName, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500))
+            Text(text = vmServer.name, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500))
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = isMenuExpanded.value)
         }
 
         ExposedDropdownMenu(
-            modifier = Modifier.focusRequester(focusRequester).width(55.dp),
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .width(55.dp),
             expanded = isMenuExpanded.value,
             onDismissRequest = { isMenuExpanded.value = false },
 
         ) {
-            DropdownMenuItem(text = { Text(text="x1") }, onClick = {
-                viewModel.setServer(ServerEntity.X1)
-                isMenuExpanded.value = false
-            })
-            DropdownMenuItem(text = { Text(text="x1.5") }, onClick = {
-                viewModel.setServer(ServerEntity.X15)
-                isMenuExpanded.value = false
-
-            })
-            DropdownMenuItem(text = { Text(text="x5") }, onClick = {
-                viewModel.setServer(ServerEntity.X5)
-                isMenuExpanded.value = false
-
-            })
+            serverList.forEach{ server ->
+                DropdownMenuItem(text = { Text(text=server.name) }, onClick = {
+                    viewModel.setServer(server)
+                    isMenuExpanded.value = false
+                })
+            }
         }
 
     }
