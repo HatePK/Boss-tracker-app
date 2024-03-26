@@ -39,6 +39,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,6 +50,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +59,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.toLowerCase
@@ -101,7 +105,6 @@ fun RenderMainContent(
     )
 
     val alarmsState: AlarmsState by viewModel.alarmsState.collectAsState()
-
 
     Box() {
         LazyColumn(modifier = Modifier
@@ -215,17 +218,19 @@ fun RenderMainContent(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(10.dp),
+                                    .padding(vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = "Будильник: ",
-                                    color = White
+                                Icon(
+                                    modifier = Modifier.size(28.dp),
+                                    painter = painterResource(id = R.drawable.ic_alarm),
+                                    contentDescription = "alarm icon",
+                                    tint = White
                                 )
                                 Box(
                                     modifier = Modifier
-                                        .padding(start = 8.dp)
+                                        .padding(start = 12.dp)
                                 ) {
                                     when (alarmsState) {
                                         is AlarmsState.Loading -> renderProgressBar()
@@ -233,18 +238,12 @@ fun RenderMainContent(
                                         is AlarmsState.Content -> {
                                             (alarmsState as AlarmsState.Content)
                                                 .alarms[item.name]?.let {
-                                                    when ((alarmsState as AlarmsState.Content).alarms[item.name]  as OneAlarmState) {
-                                                        is OneAlarmState.Loading -> renderProgressBar()
-                                                        is OneAlarmState.Error -> renderAlarmError()
-                                                        is OneAlarmState.Content -> {
-                                                            renderAlarm(
-                                                                isSet = (it as OneAlarmState.Content).isSet,
-                                                                boss = item.name,
-                                                                viewModel = viewModel,
-                                                                snackBar = snackBar
-                                                            )
-                                                        }
-                                                    }
+                                                    renderAlarm(
+                                                        alarmState = it,
+                                                        boss = item.name,
+                                                        viewModel = viewModel,
+                                                        snackBar = snackBar
+                                                    )
                                                 }
                                         }
                                     }
@@ -299,17 +298,19 @@ fun RenderMainContent(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(10.dp),
+                                    .padding(vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = "Будильник: ",
-                                    color = TextNoActive
+                                Icon(
+                                    modifier = Modifier.size(28.dp),
+                                    painter = painterResource(id = R.drawable.ic_alarm),
+                                    contentDescription = "alarm icon",
+                                    tint = White
                                 )
                                 Box(
                                     modifier = Modifier
-                                        .padding(start = 8.dp)
+                                        .padding(start = 12.dp)
                                 ) {
                                     when (alarmsState) {
                                         is AlarmsState.Loading -> renderProgressBar()
@@ -317,18 +318,12 @@ fun RenderMainContent(
                                         is AlarmsState.Content -> {
                                             (alarmsState as AlarmsState.Content)
                                                 .alarms[item.name]?.let {
-                                                when ((alarmsState as AlarmsState.Content).alarms[item.name] as OneAlarmState) {
-                                                    is OneAlarmState.Loading -> renderProgressBar()
-                                                    is OneAlarmState.Error -> renderAlarmError()
-                                                    is OneAlarmState.Content -> {
-                                                        renderAlarm(
-                                                            isSet = (it as OneAlarmState.Content).isSet,
-                                                            boss = item.name,
-                                                            viewModel = viewModel,
-                                                            snackBar = snackBar
-                                                        )
-                                                    }
-                                                }
+                                                    renderAlarm(
+                                                        alarmState = it,
+                                                        boss = item.name,
+                                                        viewModel = viewModel,
+                                                        snackBar = snackBar
+                                                    )
                                             }
                                         }
                                     }
@@ -357,7 +352,7 @@ private fun renderProgressBar() {
 }
 
 @Composable
-private fun renderAlarm(isSet: Boolean, boss: String, viewModel: MainViewModel, snackBar: SnackbarHostState) {
+private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: MainViewModel, snackBar: SnackbarHostState) {
     val context = LocalContext.current
     val openAlertDialog = remember { mutableStateOf(false) }
 
@@ -401,55 +396,72 @@ private fun renderAlarm(isSet: Boolean, boss: String, viewModel: MainViewModel, 
         }
     }
 
-    if (isSet) {
-        Row {
-            Text(text = "установлен!", color = Color.Green)
-            IconButton(
-                onClick = { viewModel.deleteAlarm(boss) },
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .size(22.dp)
-            ) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "Favorite",
-                    tint = White
-                )
-            }
-        }
-    } else {
-        Button(
-            colors = ButtonDefaults.buttonColors(containerColor = White),
-            onClick = {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    when (PackageManager.PERMISSION_GRANTED) {
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) -> {
-                            viewModel.setAlarm(boss)
-                        }
-                        else  -> {
-                            val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
+    var checked by remember { mutableStateOf(false) }
+    var thumbColor by remember { mutableStateOf(Color.Gray) }
 
-                            if (isThisFirstLaunch) {
-                                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                            } else {
-                                openAlertDialog.value = true
-                            }
-                        }
-                    }
-                } else {
-                    viewModel.setAlarm(boss)
-                }
+    when (alarmState) {
+        is OneAlarmState.Loading -> {
+            thumbColor = Color.Gray
+        }
+        is OneAlarmState.Error -> {
+            checked = false
+            thumbColor = Color.Red
+        }
+        is OneAlarmState.Content -> {
+            if (alarmState.isSet) {
+                checked = true
+                thumbColor = Color.Green
+            } else {
+                checked = false
+                thumbColor = Color.Gray
             }
-        ) {
-            Text(
-                text = "Установить",
-                style = TextStyle(color = Color(4280240768))
-            )
         }
     }
+
+    Switch(
+        checked = checked,
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = thumbColor,
+            uncheckedThumbColor = thumbColor,
+            uncheckedBorderColor = Color.Transparent
+        ),
+        thumbContent = if (alarmState is OneAlarmState.Loading) {
+            {
+                renderProgressBar()
+            }
+        } else {
+            null
+        },
+        onCheckedChange = {
+
+        if (!checked) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) -> {
+                        checked = true
+                        viewModel.setAlarm(boss)
+                    }
+                    else  -> {
+                        val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
+
+                        if (isThisFirstLaunch) {
+                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            openAlertDialog.value = true
+                        }
+                    }
+                }
+            } else {
+                checked = true
+                viewModel.setAlarm(boss)
+            }
+        } else {
+            viewModel.deleteAlarm(boss)
+        }
+    })
 }
 @Composable
 private fun renderAlarmError() {
