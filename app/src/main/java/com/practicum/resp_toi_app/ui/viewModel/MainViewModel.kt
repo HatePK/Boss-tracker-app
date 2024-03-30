@@ -35,7 +35,7 @@ class MainViewModel @Inject constructor(
     private val _serverList = MutableStateFlow<List<ServerEntity>>((listOf()))
     val serverList: StateFlow<List<ServerEntity>> = _serverList
 
-    private val _server = MutableStateFlow(ServerEntity("x5", "status"))
+    private val _server = MutableStateFlow(SharedPreferencesManager.getServer())
     val server: StateFlow<ServerEntity> = _server
 
     private val _alarmsState = MutableStateFlow<AlarmsState>(AlarmsState.Loading)
@@ -126,6 +126,7 @@ class MainViewModel @Inject constructor(
 
     fun setServer(serverEntity: ServerEntity) {
         _server.value = serverEntity
+        SharedPreferencesManager.saveServer(serverEntity)
         _alarmsState.value = AlarmsState.Loading
         getInfo()
     }

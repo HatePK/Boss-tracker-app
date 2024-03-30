@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.domain.entity.BossEntity
+import com.practicum.resp_toi_app.ui.theme.ProgressBarColor
 import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.TextNoActive
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
@@ -202,6 +205,7 @@ fun RenderMainContent(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .height(50.dp)
                                     .padding(vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
@@ -212,7 +216,7 @@ fun RenderMainContent(
                                     contentDescription = "alarm icon",
                                     tint = White
                                 )
-                                Box(
+                                Row(
                                     modifier = Modifier
                                         .padding(start = 12.dp)
                                 ) {
@@ -282,6 +286,7 @@ fun RenderMainContent(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .height(50.dp)
                                     .padding(vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
@@ -336,7 +341,12 @@ private fun renderProgressBar() {
 }
 
 @Composable
-private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: MainViewModel, snackBar: SnackbarHostState) {
+private fun renderAlarm(
+    alarmState: OneAlarmState,
+    boss: String,
+    viewModel: MainViewModel,
+    snackBar: SnackbarHostState
+) {
     val context = LocalContext.current
     val openAlertDialog = remember { mutableStateOf(false) }
 
@@ -423,35 +433,35 @@ private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: Main
             null
         },
         onCheckedChange = {
+            if (!checked) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    when (PackageManager.PERMISSION_GRANTED) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) -> {
+                            checked = true
+                            viewModel.setAlarm(boss)
+                        }
+                        else  -> {
+                            val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
 
-        if (!checked) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                when (PackageManager.PERMISSION_GRANTED) {
-                    ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) -> {
-                        checked = true
-                        viewModel.setAlarm(boss)
-                    }
-                    else  -> {
-                        val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
-
-                        if (isThisFirstLaunch) {
-                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        } else {
-                            openAlertDialog.value = true
+                            if (isThisFirstLaunch) {
+                                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            } else {
+                                openAlertDialog.value = true
+                            }
                         }
                     }
+                } else {
+                    checked = true
+                    viewModel.setAlarm(boss)
                 }
             } else {
-                checked = true
-                viewModel.setAlarm(boss)
+                viewModel.deleteAlarm(boss)
             }
-        } else {
-            viewModel.deleteAlarm(boss)
         }
-    })
+    )
 }
 @Composable
 private fun renderAlarmError() {

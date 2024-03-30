@@ -1,33 +1,29 @@
 package com.practicum.resp_toi_app.ui.parts
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Icon
-import android.os.CountDownTimer
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,22 +37,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.practicum.resp_toi_app.R
-import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
 import com.practicum.resp_toi_app.ui.viewModel.TestCallState
-import kotlinx.coroutines.flow.observeOn
-import kotlinx.coroutines.flow.onSubscription
-import kotlin.math.round
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ForegroundServiceType")
@@ -66,6 +58,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var timerButtonEnabled by remember { mutableStateOf(true) }
     var sheetTimerButtonText by remember { mutableStateOf("Запустить") }
+    val context = LocalContext.current as Activity
 
     val timer by viewModel.testCallTimer.collectAsState()
 
@@ -150,13 +143,23 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
                 }
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "do"
+                    contentDescription = "do",
+                    tint = Color.White
                 )
             }
         }
 
         TextButton(
             onClick = {
+                val openTelegram = Intent(Intent.ACTION_VIEW)
+                val appName = "org.telegram.messenger"
+
+                openTelegram.setData(Uri.parse("https://t.me/dima_ret"))
+
+                if (isAppAvailable(context, appName)) {
+                    openTelegram.setPackage(appName)
+                }
+                context.startActivity(openTelegram)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -181,7 +184,8 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
                 }
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "do"
+                    contentDescription = "do",
+                    tint = Color.White
                 )
             }
         }
@@ -217,6 +221,16 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
                 }
             }
         }
+    }
+}
+
+private fun isAppAvailable(context: Context, appName: String?): Boolean {
+    val pm = context.packageManager
+    return try {
+        pm.getPackageInfo(appName!!, PackageManager.GET_ACTIVITIES)
+        true
+    } catch (e: NameNotFoundException) {
+        false
     }
 }
 

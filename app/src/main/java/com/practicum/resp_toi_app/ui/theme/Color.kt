@@ -16,6 +16,9 @@ val cardNoActiveBackground = Color.Black.copy(alpha = 0.2f)
 val backgroundCardColor = Color(0xFF6AA2E9).copy(alpha = 0.3f)
 val TextNoActive = Color(0xFFA2A6B1)
 val SwitchThumbGreenColor = Color(0xFF2C722F)
+val BottomNavColor = Color(0xFF1F3753)
+val ThemeColor = Color(0xFF283E63)
+val ProgressBarColor = Color(0xFF92ACD8)
 
 val gradientBackGroundBrush = Brush.verticalGradient(
     colors = listOf(Color(0xFF283E63), Color(0xFF1F3753)),
