@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
-import com.practicum.resp_toi_app.ui.theme.transparent
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
 import com.practicum.resp_toi_app.ui.viewModel.TestCallState
 import kotlinx.coroutines.flow.observeOn
@@ -207,7 +206,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
                             text = "00:$timer"
                         )
                         Button(
-                            modifier = Modifier.padding(bottom = 60.dp),
+                            modifier = Modifier.padding(bottom = 88.dp),
                             enabled = timerButtonEnabled,
                             onClick = {
                                 viewModel.setTestCall()

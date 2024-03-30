@@ -1,17 +1,11 @@
 package com.practicum.resp_toi_app.ui.parts
 
 import android.Manifest
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.provider.Settings
-import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,17 +20,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
@@ -56,21 +46,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import com.google.common.reflect.Reflection.getPackageName
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.domain.entity.BossEntity
+import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.TextNoActive
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.cardActiveBackground
@@ -79,11 +65,9 @@ import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.theme.progressBarBackground
 import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
 import com.practicum.resp_toi_app.ui.viewModel.AlarmsState
-import com.practicum.resp_toi_app.ui.viewModel.MainState
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
 import com.practicum.resp_toi_app.ui.viewModel.OneAlarmState
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
-import com.practicum.resp_toi_app.utils.getActivity
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
@@ -374,7 +358,7 @@ private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: Main
                     context.startActivity(intent)
                 },
                 dialogTitle = "Нет разрешения на отправку уведомлений",
-                dialogText = "Чтобы поставить будильник, перейдите в настройки и выдайте разрешение вручную.",
+                dialogText = "Чтобы поставить будильник, перейдите в настройки и выдайте разрешение.",
                 icon = Icons.Default.Info
             )
         }
@@ -390,7 +374,7 @@ private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: Main
                 SharedPreferencesManager.saveBoolean("Notifications", false)
                 snackBar.showSnackbar(
                     message = "Ошибка: будильник не может быть установлен без разрешения на отправку уведомлений",
-                    duration = SnackbarDuration.Indefinite
+                    duration = SnackbarDuration.Short
                 )
             }
         }
@@ -398,22 +382,27 @@ private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: Main
 
     var checked by remember { mutableStateOf(false) }
     var thumbColor by remember { mutableStateOf(Color.Gray) }
+    var trackColor by remember { mutableStateOf(White) }
 
     when (alarmState) {
         is OneAlarmState.Loading -> {
-            thumbColor = Color.Gray
+            thumbColor = thumbColor
+            trackColor = trackColor
         }
         is OneAlarmState.Error -> {
             checked = false
             thumbColor = Color.Red
+            trackColor = White
         }
         is OneAlarmState.Content -> {
             if (alarmState.isSet) {
                 checked = true
-                thumbColor = Color.Green
+                thumbColor = SwitchThumbGreenColor
+                trackColor = progressBarFillColor
             } else {
                 checked = false
                 thumbColor = Color.Gray
+                trackColor = White
             }
         }
     }
@@ -423,7 +412,8 @@ private fun renderAlarm(alarmState: OneAlarmState, boss: String, viewModel: Main
         colors = SwitchDefaults.colors(
             checkedThumbColor = thumbColor,
             uncheckedThumbColor = thumbColor,
-            uncheckedBorderColor = Color.Transparent
+            uncheckedBorderColor = Color.Transparent,
+            checkedTrackColor = trackColor
         ),
         thumbContent = if (alarmState is OneAlarmState.Loading) {
             {
