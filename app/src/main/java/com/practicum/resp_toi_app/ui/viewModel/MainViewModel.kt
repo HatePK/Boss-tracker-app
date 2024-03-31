@@ -1,25 +1,34 @@
 package com.practicum.resp_toi_app.ui.viewModel
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.CountDownTimer
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.resp_toi_app.data.dto.Response
+import com.google.common.reflect.Reflection.getPackageName
 import com.practicum.resp_toi_app.domain.api.BossesInteractor
 import com.practicum.resp_toi_app.domain.entity.BossEntity
 import com.practicum.resp_toi_app.domain.entity.ServerEntity
 import com.practicum.resp_toi_app.utils.Resource
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable.join
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.util.Properties
 import javax.inject.Inject
+
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -46,6 +55,9 @@ class MainViewModel @Inject constructor(
 
     private val _testCallState = MutableStateFlow<TestCallState>(TestCallState.EnabledFirstTime)
     val testCallState: StateFlow<TestCallState> = _testCallState
+
+    private val _showXiaomiBottomSheet = MutableStateFlow(false)
+    val showXiaomiBottomSheet: StateFlow<Boolean> = _showXiaomiBottomSheet
 
     private var job: Job? = null
 
@@ -153,6 +165,9 @@ class MainViewModel @Inject constructor(
             when (response) {
                 is Resource.Success -> {
                     dataSet[boss] = OneAlarmState.Content(true)
+//                    if (isMIUI()) {
+                        _showXiaomiBottomSheet.value = true
+//                    }
                 }
                 is Resource.Error -> {
                     dataSet[boss] = OneAlarmState.Error
@@ -161,6 +176,65 @@ class MainViewModel @Inject constructor(
 
             _alarmsState.value = AlarmsState.Content(dataSet)
         }
+    }
+
+    fun closeXiaomiBottomSheet() {
+        _showXiaomiBottomSheet.value = false
+    }
+
+//    private fun onDisplayPopupPermission(context: Context) {
+//        if (!isMIUI()) {
+//            return
+//        }
+//        try {
+//            // MIUI 8
+//            val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
+//            localIntent.setClassName(
+//                "com.miui.securitycenter",
+//                "com.miui.permcenter.permissions.PermissionsEditorActivity"
+//            )
+//            localIntent.putExtra("extra_pkgname", context.packageName)
+//            context.startActivity(localIntent)
+//            return
+//        } catch (ignore: Exception) {
+//        }
+//        try {
+//            // MIUI 5/6/7
+//            val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
+//            localIntent.setClassName(
+//                "com.miui.securitycenter",
+//                "com.miui.permcenter.permissions.AppPermissionsEditorActivity"
+//            )
+//            localIntent.putExtra("extra_pkgname", context.packageName)
+//            context.startActivity(localIntent)
+//            return
+//        } catch (ignore: Exception) {
+//        }
+//        // Otherwise jump to application details
+//        val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//        val uri = Uri.fromParts("package", context.packageName, null)
+//        intent.setData(uri)
+//        context.startActivity(intent)
+//    }
+
+    private fun isMIUI(): Boolean {
+        val device = Build.MANUFACTURER
+        if (device == "Xiaomi") {
+            try {
+                val prop = Properties()
+                prop.load(FileInputStream(File(Environment.getRootDirectory(), "build.prop")))
+                return prop.getProperty(
+                    "ro.miui.ui.version.code",
+                    null
+                ) != null || prop.getProperty(
+                    "ro.miui.ui.version.name",
+                    null
+                ) != null || prop.getProperty("ro.miui.internal.storage", null) != null
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return false
     }
 
     fun deleteAlarm(boss: String) {
