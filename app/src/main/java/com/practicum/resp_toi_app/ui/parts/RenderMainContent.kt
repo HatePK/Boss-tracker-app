@@ -51,6 +51,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -116,7 +117,7 @@ fun RenderMainContent(
     val alarmsState: AlarmsState by viewModel.alarmsState.collectAsState()
     val xiaomiBottomSheetState by viewModel.showXiaomiBottomSheet.collectAsState()
 
-    Box() {
+    Box {
         LazyColumn(modifier = Modifier
             .fillMaxSize()
             .background(brush = gradientBackGroundBrush)
@@ -354,7 +355,10 @@ fun RenderMainContent(
         )
 
         if (xiaomiBottomSheetState) {
+            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
             ModalBottomSheet(
+                sheetState = sheetState,
                 onDismissRequest = { viewModel.closeXiaomiBottomSheet() },
             ) {
                 Column(
