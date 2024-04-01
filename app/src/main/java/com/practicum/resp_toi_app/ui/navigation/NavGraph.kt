@@ -45,7 +45,7 @@ fun NavGraph(
                 )
             }
         ) {
-            MainScreen(viewModel = viewModel, snackBar = snackBarHostState)
+            MainScreen(viewModel = viewModel, snackBar = snackBarHostState, navHostController)
         }
         composable(
             "settings",

@@ -13,6 +13,8 @@ object SharedPreferencesManager {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var gson: Gson
 
+    const val XIAOMI_BS = "Xiaomi bottom sheet"
+
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         gson = Gson()

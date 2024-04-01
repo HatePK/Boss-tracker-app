@@ -1,9 +1,12 @@
 package com.practicum.resp_toi_app.ui.parts
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,6 +56,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -79,8 +83,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.domain.entity.BossEntity
+import com.practicum.resp_toi_app.ui.navigation.BottomNavItem
 import com.practicum.resp_toi_app.ui.theme.ProgressBarColor
 import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.TextNoActive
@@ -97,6 +104,7 @@ import com.practicum.resp_toi_app.utils.SharedPreferencesManager
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,7 +112,8 @@ import kotlinx.coroutines.launch
 fun RenderMainContent(
     data: List<BossEntity>,
     viewModel: MainViewModel,
-    snackBar: SnackbarHostState
+    snackBar: SnackbarHostState,
+    navController: NavHostController
 ) {
 
     val refreshing by viewModel.isRefreshing.collectAsState()
@@ -116,6 +125,9 @@ fun RenderMainContent(
 
     val alarmsState: AlarmsState by viewModel.alarmsState.collectAsState()
     val xiaomiBottomSheetState by viewModel.showXiaomiBottomSheet.collectAsState()
+    val context = LocalContext.current
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val scope = rememberCoroutineScope()
 
     Box {
         LazyColumn(modifier = Modifier
@@ -354,9 +366,9 @@ fun RenderMainContent(
             modifier = Modifier.align(Alignment.TopCenter)
         )
 
-        if (xiaomiBottomSheetState) {
-            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+        if (xiaomiBottomSheetState) {
             ModalBottomSheet(
                 sheetState = sheetState,
                 onDismissRequest = { viewModel.closeXiaomiBottomSheet() },
@@ -398,14 +410,17 @@ fun RenderMainContent(
                     Button(
                         modifier = Modifier.padding(vertical = 10.dp),
                         onClick = {
-                            viewModel.setTestCall()
+                            onDisplayPopupPermission(context)
                         }
                     ) {
                         Text("Выдать разрешение")
                     }
                     Text(text = "или")
                     TextButton(
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            viewModel.closeXiaomiBottomSheet()
+                            navController.navigate(BottomNavItem.settings.route)
+                        }
                     ) {
                         Text(
                             text = "Протестировать будильник"
@@ -413,7 +428,9 @@ fun RenderMainContent(
                     }
                     TextButton(
                         modifier = Modifier.padding(top = 30.dp, bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            viewModel.stopShowXiaomiBottomSheet()
+                        }
                     ) {
                         Text(
                             color = Color.Gray,
@@ -637,4 +654,36 @@ private fun convertToTime(timeFromDeath: Int) : String {
             minutes
         }
     }"
+}
+
+private fun onDisplayPopupPermission(context: Context) {
+    try {
+        // MIUI 8
+        val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
+        localIntent.setClassName(
+            "com.miui.securitycenter",
+            "com.miui.permcenter.permissions.PermissionsEditorActivity"
+        )
+        localIntent.putExtra("extra_pkgname", context.packageName)
+        context.startActivity(localIntent)
+        return
+    } catch (ignore: Exception) {
+    }
+    try {
+        // MIUI 5/6/7
+        val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
+        localIntent.setClassName(
+            "com.miui.securitycenter",
+            "com.miui.permcenter.permissions.AppPermissionsEditorActivity"
+        )
+        localIntent.putExtra("extra_pkgname", context.packageName)
+        context.startActivity(localIntent)
+        return
+    } catch (ignore: Exception) {
+    }
+    // Otherwise jump to application details
+    val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+    val uri = Uri.fromParts("package", context.packageName, null)
+    intent.setData(uri)
+    context.startActivity(intent)
 }

@@ -164,10 +164,12 @@ class MainViewModel @Inject constructor(
 
             when (response) {
                 is Resource.Success -> {
+                    val isShowBsAvailable = SharedPreferencesManager.getBoolean(SharedPreferencesManager.XIAOMI_BS, true)
                     dataSet[boss] = OneAlarmState.Content(true)
-//                    if (isMIUI()) {
+//                    isMIUI() &&
+                    if (isShowBsAvailable) {
                         _showXiaomiBottomSheet.value = true
-//                    }
+                    }
                 }
                 is Resource.Error -> {
                     dataSet[boss] = OneAlarmState.Error
@@ -182,40 +184,10 @@ class MainViewModel @Inject constructor(
         _showXiaomiBottomSheet.value = false
     }
 
-//    private fun onDisplayPopupPermission(context: Context) {
-//        if (!isMIUI()) {
-//            return
-//        }
-//        try {
-//            // MIUI 8
-//            val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
-//            localIntent.setClassName(
-//                "com.miui.securitycenter",
-//                "com.miui.permcenter.permissions.PermissionsEditorActivity"
-//            )
-//            localIntent.putExtra("extra_pkgname", context.packageName)
-//            context.startActivity(localIntent)
-//            return
-//        } catch (ignore: Exception) {
-//        }
-//        try {
-//            // MIUI 5/6/7
-//            val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
-//            localIntent.setClassName(
-//                "com.miui.securitycenter",
-//                "com.miui.permcenter.permissions.AppPermissionsEditorActivity"
-//            )
-//            localIntent.putExtra("extra_pkgname", context.packageName)
-//            context.startActivity(localIntent)
-//            return
-//        } catch (ignore: Exception) {
-//        }
-//        // Otherwise jump to application details
-//        val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-//        val uri = Uri.fromParts("package", context.packageName, null)
-//        intent.setData(uri)
-//        context.startActivity(intent)
-//    }
+    fun stopShowXiaomiBottomSheet() {
+        SharedPreferencesManager.saveBoolean(SharedPreferencesManager.XIAOMI_BS, false)
+        _showXiaomiBottomSheet.value = false
+    }
 
     private fun isMIUI(): Boolean {
         val device = Build.MANUFACTURER
