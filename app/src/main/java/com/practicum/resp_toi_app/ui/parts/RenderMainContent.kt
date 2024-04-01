@@ -93,6 +93,7 @@ import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.TextNoActive
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.cardActiveBackground
+import com.practicum.resp_toi_app.ui.theme.cardNoActiveAlarmBackground
 import com.practicum.resp_toi_app.ui.theme.cardNoActiveBackground
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.theme.progressBarBackground
@@ -155,14 +156,16 @@ fun RenderMainContent(
                     val progressPercentage by remember {
                         mutableFloatStateOf(countPercentage(item.timeFromDeath))
                     }
-                    Card(
+                    ElevatedCard(
                         colors = CardDefaults.cardColors(
                             containerColor = backgroundCardColor,
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(cardPadding),
-                        elevation = CardDefaults.cardElevation()
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 6.dp
+                        )
                     ) {
                         Column {
                             Row(
@@ -277,13 +280,16 @@ fun RenderMainContent(
                     }
                 } else {
                     Column {
-                        Card(
+                        ElevatedCard(
                             colors = CardDefaults.cardColors(
-                                containerColor = cardNoActiveBackground,
+                                containerColor = cardNoActiveAlarmBackground,
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(cardPadding)
+                                .padding(cardPadding),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 6.dp
+                            )
                         ){
                             Column(modifier = Modifier
                                 .clip(

@@ -22,6 +22,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -45,6 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.practicum.resp_toi_app.R
+import com.practicum.resp_toi_app.ui.theme.BottomNavColor
+import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
+import com.practicum.resp_toi_app.ui.theme.cardNoActiveAlarmBackground
+import com.practicum.resp_toi_app.ui.theme.cardNoActiveBackground
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
 import com.practicum.resp_toi_app.ui.viewModel.TestCallState
@@ -93,13 +100,15 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
         .background(brush = gradientBackGroundBrush)
         .padding(horizontal = 6.dp, vertical = 12.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth()
+        ElevatedCard(
+            colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            )
         ) {
             Column(
-                modifier = Modifier
-                    .background(brush = gradientBackGroundBrush)
-                    .padding(12.dp)
+                modifier = Modifier.padding(vertical = 14.dp, horizontal = 14.dp)
             ) {
                 Text(
                     text = "Это приложение полностью бесплатное",
@@ -107,9 +116,14 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 )
                 Text(
-                    modifier = Modifier.padding(top = 10.dp),
+                    modifier = Modifier.padding(top = 18.dp),
                     color = Color.White,
-                    text = "Я начинающий Android-разработчик (безработный, конечно же). Спасибо, что ставите оценки в Google Play, это сильно поможет мне в портфолио."
+                    text = "Я начинающий Android-разработчик и ищу работу! Если у вас есть друзья и знакомые разработчики, я буду благодарен за рекомендацию."
+                )
+                Text(
+                    modifier = Modifier.padding(top = 18.dp),
+                    color = Color.White,
+                    text = "Спасибо, что ставите оценки в Google Play и на мою страницу в GitHub, это сильно помогает мне в портфолио."
                 )
             }
         }

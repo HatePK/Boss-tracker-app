@@ -160,14 +160,13 @@ class MainViewModel @Inject constructor(
                 bossName = boss
             )
 
-            val dataSet = newSet.toMutableMap()
+            val dataSet = (_alarmsState.value as AlarmsState.Content).alarms.toMutableMap()
 
             when (response) {
                 is Resource.Success -> {
                     val isShowBsAvailable = SharedPreferencesManager.getBoolean(SharedPreferencesManager.XIAOMI_BS, true)
                     dataSet[boss] = OneAlarmState.Content(true)
-//                    isMIUI() &&
-                    if (isShowBsAvailable) {
+                    if (isMIUI() && isShowBsAvailable) {
                         _showXiaomiBottomSheet.value = true
                     }
                 }
@@ -226,7 +225,7 @@ class MainViewModel @Inject constructor(
                 bossName = boss
             )
 
-            val dataSet = newSet.toMutableMap()
+            val dataSet = (_alarmsState.value as AlarmsState.Content).alarms.toMutableMap()
 
             when (response) {
                 is Resource.Success -> {
