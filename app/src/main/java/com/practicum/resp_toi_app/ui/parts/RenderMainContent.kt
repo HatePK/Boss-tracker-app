@@ -1,10 +1,14 @@
 package com.practicum.resp_toi_app.ui.parts
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AppOpsManager
 import android.content.Context
+import android.content.Context.APP_OPS_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Binder
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -107,6 +111,7 @@ import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.lang.reflect.Method
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,6 +134,7 @@ fun RenderMainContent(
     val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val scope = rememberCoroutineScope()
+    val isShowOnLockScreenEnable = isShowOnLockScreenPermissionEnable(context)
 
     Box {
         LazyColumn(modifier = Modifier
@@ -374,7 +380,7 @@ fun RenderMainContent(
 
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-        if (xiaomiBottomSheetState) {
+        if (xiaomiBottomSheetState && isShowOnLockScreenEnable == false) {
             ModalBottomSheet(
                 sheetState = sheetState,
                 onDismissRequest = { viewModel.closeXiaomiBottomSheet() },
@@ -582,6 +588,7 @@ private fun renderAlarm(
         }
     )
 }
+
 @Composable
 private fun renderAlarmError() {
     Text(text = "Ошибка загрузки", color = Color.Red)
@@ -688,8 +695,26 @@ private fun onDisplayPopupPermission(context: Context) {
     } catch (ignore: Exception) {
     }
     // Otherwise jump to application details
-    val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
     val uri = Uri.fromParts("package", context.packageName, null)
     intent.setData(uri)
     context.startActivity(intent)
+}
+
+@SuppressLint("DiscouragedPrivateApi")
+private fun isShowOnLockScreenPermissionEnable(context: Context): Boolean? {
+    return try {
+        val manager = context.getSystemService(APP_OPS_SERVICE) as AppOpsManager
+        val method = AppOpsManager::class.java.getDeclaredMethod(
+            "checkOpNoThrow",
+            Int::class.javaPrimitiveType,
+            Int::class.javaPrimitiveType,
+            String::class.java
+        )
+        val result =
+            method.invoke(manager, 10020, Binder.getCallingUid(), context.packageName) as Int
+        AppOpsManager.MODE_ALLOWED == result
+    } catch (e: Exception) {
+        null
+    }
 }

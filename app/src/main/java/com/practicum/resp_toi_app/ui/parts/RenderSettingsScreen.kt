@@ -61,7 +61,7 @@ import com.practicum.resp_toi_app.ui.viewModel.TestCallState
 @SuppressLint("ForegroundServiceType")
 @Composable
 fun RenderSettingsScreen(viewModel: MainViewModel) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
     var timerButtonEnabled by remember { mutableStateOf(true) }
     var sheetTimerButtonText by remember { mutableStateOf("Запустить") }

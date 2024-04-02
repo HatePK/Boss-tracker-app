@@ -166,7 +166,7 @@ class MainViewModel @Inject constructor(
                 is Resource.Success -> {
                     val isShowBsAvailable = SharedPreferencesManager.getBoolean(SharedPreferencesManager.XIAOMI_BS, true)
                     dataSet[boss] = OneAlarmState.Content(true)
-                    if (isMIUI() && isShowBsAvailable) {
+                    if (isShowBsAvailable) {
                         _showXiaomiBottomSheet.value = true
                     }
                 }
@@ -186,26 +186,6 @@ class MainViewModel @Inject constructor(
     fun stopShowXiaomiBottomSheet() {
         SharedPreferencesManager.saveBoolean(SharedPreferencesManager.XIAOMI_BS, false)
         _showXiaomiBottomSheet.value = false
-    }
-
-    private fun isMIUI(): Boolean {
-        val device = Build.MANUFACTURER
-        if (device == "Xiaomi") {
-            try {
-                val prop = Properties()
-                prop.load(FileInputStream(File(Environment.getRootDirectory(), "build.prop")))
-                return prop.getProperty(
-                    "ro.miui.ui.version.code",
-                    null
-                ) != null || prop.getProperty(
-                    "ro.miui.ui.version.name",
-                    null
-                ) != null || prop.getProperty("ro.miui.internal.storage", null) != null
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return false
     }
 
     fun deleteAlarm(boss: String) {
