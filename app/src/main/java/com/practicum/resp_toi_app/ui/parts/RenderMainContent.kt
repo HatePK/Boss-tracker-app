@@ -109,9 +109,7 @@ import com.practicum.resp_toi_app.utils.SharedPreferencesManager
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.lang.reflect.Method
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,7 +119,6 @@ fun RenderMainContent(
     snackBar: SnackbarHostState,
     navController: NavHostController
 ) {
-
     val refreshing by viewModel.isRefreshing.collectAsState()
 
     val pullRefreshState = rememberPullRefreshState(
@@ -132,8 +129,6 @@ fun RenderMainContent(
     val alarmsState: AlarmsState by viewModel.alarmsState.collectAsState()
     val xiaomiBottomSheetState by viewModel.showXiaomiBottomSheet.collectAsState()
     val context = LocalContext.current
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val scope = rememberCoroutineScope()
     val isShowOnLockScreenEnable = isShowOnLockScreenPermissionEnable(context)
 
     Box {
@@ -205,11 +200,11 @@ fun RenderMainContent(
                                         modifier = Modifier.padding(top = 18.dp),
                                         style = TextStyle(fontSize = 16.sp),
                                         color = White,
-                                        text = "${item.respStart} - ${item.respEnd} МСК"
+                                        text = "${item.respStart} — ${item.respEnd} МСК"
                                     )
                                     Text(
                                         modifier = Modifier.padding(top = 18.dp),
-                                        style = TextStyle(fontSize = 18.sp),
+                                        style = TextStyle(fontSize = 16.sp),
                                         color = White,
                                         text = "До конца ${countTimeBeforeResp(item.timeFromDeath)}"
                                     )
@@ -322,11 +317,11 @@ fun RenderMainContent(
                                     modifier = Modifier.padding(top = 10.dp),
                                     style = TextStyle(fontSize = 20.sp),
                                     color = TextNoActive,
-                                    text = "${item.respStart} - ${item.respEnd} МСК"
+                                    text = "${item.respStart} — ${item.respEnd} МСК"
                                 )
                                 Text(
                                     modifier = Modifier.padding(top = 10.dp),
-                                    style = TextStyle(fontSize = 18.sp),
+                                    style = TextStyle(fontSize = 16.sp),
                                     color = TextNoActive,
                                     text = "Респ начнется через ${countTimeBeforeResp(item.timeFromDeath)}"
                                 )

@@ -22,6 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.subscribe
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
@@ -223,10 +224,16 @@ class MainViewModel @Inject constructor(
 
     fun refresh() {
         _isRefreshing.value = true
-        _alarmsState.value = AlarmsState.Loading
+
+        if (stateLiveData.value is MainState.Error) {
+            _stateLiveData.value = MainState.Loading
+        } else if (stateLiveData.value is MainState.Content) {
+            _alarmsState.value = AlarmsState.Loading
+        }
 
         viewModelScope.launch {
             delay(500)
+            getServersList()
             loadData()
 
             _isRefreshing.value = false

@@ -16,7 +16,7 @@ fun MainScreen(viewModel: MainViewModel, snackBar: SnackbarHostState, navHostCon
     val state: MainState by viewModel.stateLiveData.collectAsState()
 
     when (state) {
-        is MainState.Error -> RenderMainError((state as MainState.Error).message)
+        is MainState.Error -> RenderMainError((state as MainState.Error).message, viewModel)
         is MainState.Content -> RenderMainContent((state as MainState.Content).bosses, viewModel, snackBar, navHostController)
         is MainState.Loading -> RenderMainLoading()
     }

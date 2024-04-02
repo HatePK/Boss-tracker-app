@@ -7,8 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
 import android.net.Uri
+import android.text.SpannableStringBuilder
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -39,14 +43,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.text.HtmlCompat
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.theme.BottomNavColor
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
@@ -68,8 +77,9 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
     val context = LocalContext.current as Activity
 
     val timer by viewModel.testCallTimer.collectAsState()
-
     val testCallState = viewModel.testCallState.collectAsState()
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     when (testCallState.value) {
         is TestCallState.Loading -> {
@@ -102,7 +112,9 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
     ) {
         ElevatedCard(
             colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 6.dp
             )
@@ -118,13 +130,39 @@ fun RenderSettingsScreen(viewModel: MainViewModel) {
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
                     color = Color.White,
-                    text = "Я начинающий Android-разработчик и ищу работу! Если у вас есть друзья и знакомые разработчики, я буду благодарен за рекомендацию."
+                    text = "Я начинающий Android-разработчик и ищу работу! Если у вас есть друзья в этой сфере, я буду благодарен за рекомендацию."
                 )
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
                     color = Color.White,
                     text = "Спасибо, что ставите оценки в Google Play и на мою страницу в GitHub, это сильно помогает мне в портфолио."
                 )
+                Row (
+                    modifier = Modifier
+                        .padding(top = 22.dp)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) {
+                            val openTelegram = Intent(Intent.ACTION_VIEW)
+                            openTelegram.setData(Uri.parse("https://github.com/HatePK/Boss-tracker-app"))
+
+                            context.startActivity(openTelegram)
+                        }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Github star",
+                        tint = Color.Yellow
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 10.dp)
+                            .align(Alignment.CenterVertically),
+                        text = "Поставить звезду на GitHub",
+                        style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold)
+                    )
+                }
             }
         }
 
@@ -247,4 +285,3 @@ private fun isAppAvailable(context: Context, appName: String?): Boolean {
         false
     }
 }
-
