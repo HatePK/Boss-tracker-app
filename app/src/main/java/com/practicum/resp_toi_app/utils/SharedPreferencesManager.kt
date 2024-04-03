@@ -2,7 +2,7 @@ package com.practicum.resp_toi_app.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import com.google.gson.Gson
 import com.practicum.resp_toi_app.domain.entity.ServerEntity
 
@@ -14,6 +14,7 @@ object SharedPreferencesManager {
     private lateinit var gson: Gson
 
     const val XIAOMI_BS = "Xiaomi bottom sheet"
+    const val COMPACT_MODE = "Compact mode"
 
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -49,5 +50,16 @@ object SharedPreferencesManager {
         } else {
             gson.fromJson(serverJson, ServerEntity::class.java)
         }
+    }
+
+    fun subscribe(inputKey: String, task: () -> Unit) {
+        val listener =
+            OnSharedPreferenceChangeListener { _, key ->
+                if (key == inputKey) {
+                    task()
+                }
+            }
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
     }
 }

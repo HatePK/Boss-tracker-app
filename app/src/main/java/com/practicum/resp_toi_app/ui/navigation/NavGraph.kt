@@ -62,7 +62,7 @@ fun NavGraph(
                 )
             }
         ) {
-            RenderSettingsScreen(viewModel = viewModel)
+            RenderSettingsScreen(viewModel = viewModel, snackBar = snackBarHostState)
         }
     }
 }

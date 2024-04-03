@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import com.practicum.resp_toi_app.ui.viewModel.MainState
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
+import com.practicum.resp_toi_app.utils.SharedPreferencesManager
+import com.practicum.resp_toi_app.utils.SharedPreferencesManager.COMPACT_MODE
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
 
 @Composable
@@ -17,7 +19,24 @@ fun MainScreen(viewModel: MainViewModel, snackBar: SnackbarHostState, navHostCon
 
     when (state) {
         is MainState.Error -> RenderMainError((state as MainState.Error).message, viewModel)
-        is MainState.Content -> RenderMainContentExperemental((state as MainState.Content).bosses, viewModel, snackBar, navHostController)
+        is MainState.Content -> {
+            if (SharedPreferencesManager.getBoolean(COMPACT_MODE, true)) {
+                RenderMainContentExperemental(
+                    data = (state as MainState.Content).bosses,
+                    viewModel = viewModel,
+                    snackBar = snackBar,
+                    navController = navHostController
+                )
+            } else {
+                RenderMainContent(
+                    data = (state as MainState.Content).bosses,
+                    viewModel = viewModel,
+                    snackBar = snackBar,
+                    navController = navHostController
+                )
+            }
+        }
+
         is MainState.Loading -> RenderMainLoading()
     }
 }

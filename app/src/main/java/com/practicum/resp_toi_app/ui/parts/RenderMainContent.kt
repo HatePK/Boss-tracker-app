@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -259,6 +260,8 @@ fun RenderMainContent(
                                 Row(
                                     modifier = Modifier
                                         .padding(start = 12.dp)
+                                        .width(52.dp),
+                                    horizontalArrangement = Arrangement.Center
                                 ) {
                                     when (alarmsState) {
                                         is AlarmsState.Loading -> renderProgressBar()
@@ -340,9 +343,11 @@ fun RenderMainContent(
                                     contentDescription = "alarm icon",
                                     tint = White
                                 )
-                                Box(
+                                Row(
                                     modifier = Modifier
                                         .padding(start = 12.dp)
+                                        .width(52.dp),
+                                    horizontalArrangement = Arrangement.Center
                                 ) {
                                     when (alarmsState) {
                                         is AlarmsState.Loading -> renderProgressBar()
