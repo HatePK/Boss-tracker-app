@@ -20,6 +20,7 @@ val SwitchThumbGreenColor = Color(0xFF2C722F)
 val BottomNavColor = Color(0xFF1F3753)
 val ThemeColor = Color(0xFF283E63)
 val ProgressBarColor = Color(0xFF92ACD8)
+val cardActiveLighterBackground = Color(4283143870)
 
 val gradientBackGroundBrush = Brush.verticalGradient(
     colors = listOf(Color(0xFF283E63), Color(0xFF1F3753)),

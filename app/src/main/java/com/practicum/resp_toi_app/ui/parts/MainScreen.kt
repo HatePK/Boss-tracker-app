@@ -17,7 +17,7 @@ fun MainScreen(viewModel: MainViewModel, snackBar: SnackbarHostState, navHostCon
 
     when (state) {
         is MainState.Error -> RenderMainError((state as MainState.Error).message, viewModel)
-        is MainState.Content -> RenderMainContent((state as MainState.Content).bosses, viewModel, snackBar, navHostController)
+        is MainState.Content -> RenderMainContentExperemental((state as MainState.Content).bosses, viewModel, snackBar, navHostController)
         is MainState.Loading -> RenderMainLoading()
     }
 }

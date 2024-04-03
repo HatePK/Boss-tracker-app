@@ -74,11 +74,16 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             delay(500)
 
-            val token = SharedPreferencesManager.getString("Token", "")
+            var token = SharedPreferencesManager.getString("Token", "")
             val map = mutableMapOf<String, OneAlarmState>()
 
             bosses.forEach{
                 map[it.name] = OneAlarmState.Loading
+            }
+
+            while (token == "") {
+                delay(500)
+                token = SharedPreferencesManager.getString("Token", "")
             }
 
             bossesInteractor.getAlarmsInfo(token).collect {alarms ->
