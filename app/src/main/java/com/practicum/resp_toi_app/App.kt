@@ -39,7 +39,7 @@ class App: Application() {
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build()
 
-            val uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM)
+            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
 
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val mChannel = NotificationChannel("Default", "Будильник", NotificationManager.IMPORTANCE_HIGH)

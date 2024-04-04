@@ -40,7 +40,9 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,6 +84,8 @@ import androidx.core.text.HtmlCompat
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.navigation.BottomNavItem
 import com.practicum.resp_toi_app.ui.theme.BottomNavColor
+import com.practicum.resp_toi_app.ui.theme.CardAttentionColor
+import com.practicum.resp_toi_app.ui.theme.CardConfirmedColor
 import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.cardNoActiveAlarmBackground
@@ -107,17 +111,8 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
     var sheetTimerButtonText by remember { mutableStateOf("Запустить") }
     val context = LocalContext.current as Activity
 
-    val isShowOnLockScreenPermissionEnable = isShowOnLockScreenPermissionEnable(context)
     var xiaomiBottomSheetShow by remember {
         mutableStateOf(false)
-    }
-
-    var isShowXiaomiBsEnabled by remember {
-        mutableStateOf(SharedPreferencesManager.getBoolean(XIAOMI_BS, true))
-    }
-
-    SharedPreferencesManager.subscribe(XIAOMI_BS) {
-        isShowXiaomiBsEnabled = SharedPreferencesManager.getBoolean(XIAOMI_BS, true)
     }
 
     val timer by viewModel.testCallTimer.collectAsState()
@@ -260,13 +255,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                             context,
                             Manifest.permission.POST_NOTIFICATIONS
                         ) -> {
-                            if (isShowOnLockScreenPermissionEnable == null) {
-                                showBottomSheet = true
-                            } else if (isShowOnLockScreenPermissionEnable == false && isShowXiaomiBsEnabled) {
-                                xiaomiBottomSheetShow = true
-                            } else {
-                                showBottomSheet = true
-                            }
+                            showBottomSheet = true
                         }
                         else  -> {
                             val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
@@ -279,13 +268,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         }
                     }
                 } else {
-                    if (isShowOnLockScreenPermissionEnable == null) {
-                        showBottomSheet = true
-                    } else if (isShowOnLockScreenPermissionEnable == false && isShowXiaomiBsEnabled) {
-                        xiaomiBottomSheetShow = true
-                    } else {
-                        showBottomSheet = true
-                    }
+                    showBottomSheet = true
                 }
             },
             modifier = Modifier
@@ -422,27 +405,103 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                 },
                 sheetState = sheetState
             ) {
+                val isShowOnLockScreenPermissionEnable = isShowOnLockScreenPermissionEnable(context)
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                        Text("Через 30 секунд после запуска, вам на телефон поступит тестовый будильник. Чтобы убедиться, что всё работает правильно, полностью закройте приложение и заблокируйте экран.")
-                        Text(
-                            modifier = Modifier.padding(vertical = 20.dp),
-                            style = TextStyle(fontSize = 74.sp),
-                            text = "00:$timer"
-                        )
-                        Button(
-                            modifier = Modifier.padding(bottom = 88.dp),
-                            enabled = timerButtonEnabled,
-                            onClick = {
-                                viewModel.setTestCall()
-                            }
+                    if (isShowOnLockScreenPermissionEnable != null) {
+                        ElevatedCard(
+                            modifier = Modifier
+                                .padding(bottom = 20.dp)
+                                .fillMaxWidth(),
+                            elevation = CardDefaults.cardElevation(6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isShowOnLockScreenPermissionEnable == false) {
+                                    CardAttentionColor
+                                } else {
+                                    CardConfirmedColor
+                                }
+                            )
                         ) {
-                            Text(sheetTimerButtonText)
+                            Row(
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Info,
+                                        contentDescription = "warn icon",
+                                        tint = if (isShowOnLockScreenPermissionEnable == false) {
+                                            Color.Red
+                                        } else {
+                                            SwitchThumbGreenColor
+                                        }
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.65f)
+                                            .padding(horizontal = 6.dp),
+                                        text = if (isShowOnLockScreenPermissionEnable == false) {
+                                            "Смартфонам Xiaomi нужно специальное разрешение"
+                                        } else {
+                                            "Разрешение получено"
+                                        },
+                                        color = if (isShowOnLockScreenPermissionEnable == false) {
+                                            Color.Black
+                                        } else {
+                                            SwitchThumbGreenColor
+                                        },
+                                        fontSize = 12.sp,
+                                        lineHeight = 13.sp
+                                    )
+                                }
+                                if (isShowOnLockScreenPermissionEnable == false) {
+                                    TextButton(
+                                        onClick = {
+                                            showBottomSheet = false
+                                            xiaomiBottomSheetShow = true
+                                        },
+                                    ) {
+                                        Text(text = "Включить")
+                                    }
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = "check icon",
+                                        tint = SwitchThumbGreenColor,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
+                            }
                         }
+                    }
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "Через 30 секунд после запуска, вам на телефон поступит тестовый будильник. Чтобы убедиться, что всё работает правильно, полностью закройте приложение и заблокируйте экран."
+                    )
+                    Text(
+                        modifier = Modifier.padding(vertical = 20.dp),
+                        style = TextStyle(fontSize = 74.sp),
+                        text = "00:$timer"
+                    )
+                    Button(
+                        modifier = Modifier.padding(bottom = (WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().value + 20).dp ),
+                        enabled = timerButtonEnabled,
+                        onClick = {
+                            viewModel.setTestCall()
+                        }
+                    ) {
+                        Text(sheetTimerButtonText)
+                    }
                 }
             }
         }
@@ -450,8 +509,6 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
 
     if (
         xiaomiBottomSheetShow
-        && isShowOnLockScreenPermissionEnable == false
-        && isShowXiaomiBsEnabled
     ) {
         ModalBottomSheet(
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -492,37 +549,16 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                 }
 
                 Button(
-                    modifier = Modifier.padding(vertical = 10.dp),
+                    modifier = Modifier.padding(
+                        top = 30.dp,
+                        bottom = (WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().value + 20).dp
+                    ),
                     onClick = {
+                        xiaomiBottomSheetShow = false
                         onDisplayPopupPermission(context)
                     }
                 ) {
                     Text("Выдать разрешение")
-                }
-                Text(text = "или")
-                TextButton(
-                    onClick = {
-                        xiaomiBottomSheetShow = false
-                        showBottomSheet = true
-                    }
-                ) {
-                    Text(
-                        text = "Протестировать будильник"
-                    )
-                }
-                TextButton(
-                    modifier = Modifier.padding(top = 30.dp, bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
-                    onClick = {
-                        xiaomiBottomSheetShow = false
-                        SharedPreferencesManager.saveBoolean(XIAOMI_BS, false)
-                    }
-                ) {
-                    Text(
-                        color = Color.Gray,
-                        fontSize = 12.sp,
-                        textDecoration = TextDecoration.Underline,
-                        text = "Больше не показывать это сообщение"
-                    )
                 }
             }
         }

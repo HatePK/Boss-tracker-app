@@ -21,6 +21,8 @@ val BottomNavColor = Color(0xFF1F3753)
 val ThemeColor = Color(0xFF283E63)
 val ProgressBarColor = Color(0xFF92ACD8)
 val cardActiveLighterBackground = Color(4283143870)
+val CardAttentionColor = Color(0xFFF7D3D3)
+val CardConfirmedColor = Color(0xFFBFEBB7)
 
 val gradientBackGroundBrush = Brush.verticalGradient(
     colors = listOf(Color(0xFF283E63), Color(0xFF1F3753)),

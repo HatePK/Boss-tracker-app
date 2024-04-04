@@ -81,7 +81,7 @@ class MainViewModel @Inject constructor(
                 map[it.name] = OneAlarmState.Loading
             }
 
-            while (token == "") {
+            if (token == "") {
                 delay(500)
                 token = SharedPreferencesManager.getString("Token", "")
             }
