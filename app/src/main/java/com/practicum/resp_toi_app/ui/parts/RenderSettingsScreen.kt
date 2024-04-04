@@ -80,7 +80,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
-import androidx.core.text.HtmlCompat
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.navigation.BottomNavItem
 import com.practicum.resp_toi_app.ui.theme.BottomNavColor
@@ -88,6 +87,7 @@ import com.practicum.resp_toi_app.ui.theme.CardAttentionColor
 import com.practicum.resp_toi_app.ui.theme.CardConfirmedColor
 import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
+import com.practicum.resp_toi_app.ui.theme.cardActiveLighterBackground
 import com.practicum.resp_toi_app.ui.theme.cardNoActiveAlarmBackground
 import com.practicum.resp_toi_app.ui.theme.cardNoActiveBackground
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
@@ -375,10 +375,10 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
             Switch(
                 checked = isChecked,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = SwitchThumbGreenColor,
+                    checkedThumbColor = backgroundCardColor,
+                    checkedTrackColor = cardActiveLighterBackground,
                     uncheckedThumbColor = Color.Gray,
-                    uncheckedBorderColor = Color.Transparent,
-                    checkedTrackColor = progressBarFillColor
+                    uncheckedBorderColor = Color.Transparent
                 ),
                 thumbContent = if (isChecked) {
                     {
