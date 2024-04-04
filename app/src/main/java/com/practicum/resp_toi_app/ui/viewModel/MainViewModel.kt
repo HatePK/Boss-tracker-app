@@ -17,6 +17,7 @@ import com.practicum.resp_toi_app.domain.entity.BossEntity
 import com.practicum.resp_toi_app.domain.entity.ServerEntity
 import com.practicum.resp_toi_app.utils.Resource
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
+import com.practicum.resp_toi_app.utils.refreshFcmToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -81,8 +82,9 @@ class MainViewModel @Inject constructor(
                 map[it.name] = OneAlarmState.Loading
             }
 
-            if (token == "") {
-                delay(500)
+            while (token == "") {
+                refreshFcmToken()
+                delay(2000)
                 token = SharedPreferencesManager.getString("Token", "")
             }
 

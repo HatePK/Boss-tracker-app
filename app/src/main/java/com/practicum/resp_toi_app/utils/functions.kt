@@ -1,11 +1,18 @@
 package com.practicum.resp_toi_app.utils
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
+import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 
-fun Context.getActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.getActivity()
-    else -> null
+fun refreshFcmToken() {
+    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        if (!task.isSuccessful) {
+            Log.w("ABOBA", "Fetching FCM registration token failed", task.exception)
+            return@OnCompleteListener
+        }
+
+        val token = task.result
+        SharedPreferencesManager.saveString("Token", token)
+    })
 }
+

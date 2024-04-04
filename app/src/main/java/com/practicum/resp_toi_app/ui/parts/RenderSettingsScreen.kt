@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AppOpsManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -78,6 +79,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.practicum.resp_toi_app.R
@@ -95,6 +97,7 @@ import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
 import com.practicum.resp_toi_app.ui.viewModel.OneAlarmState
 import com.practicum.resp_toi_app.ui.viewModel.TestCallState
+import com.practicum.resp_toi_app.utils.PushNotificationService
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager.COMPACT_MODE
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager.XIAOMI_BS
@@ -256,8 +259,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                             Manifest.permission.POST_NOTIFICATIONS
                         ) -> {
                             showBottomSheet = true
-                        }
-                        else  -> {
+                        } else  -> {
                             val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
 
                             if (isThisFirstLaunch) {
@@ -268,7 +270,13 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         }
                     }
                 } else {
-                    showBottomSheet = true
+                    val notificationManager = NotificationManagerCompat.from(context)
+
+                    if (notificationManager.areNotificationsEnabled()) {
+                        showBottomSheet = true
+                    } else {
+                        openAlertDialog.value = true
+                    }
                 }
             },
             modifier = Modifier

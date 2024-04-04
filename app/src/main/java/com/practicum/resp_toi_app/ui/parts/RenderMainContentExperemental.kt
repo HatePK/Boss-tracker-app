@@ -89,6 +89,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -536,8 +537,7 @@ private fun renderAlarm(
                         ) -> {
                             checked = true
                             viewModel.setAlarm(boss)
-                        }
-                        else  -> {
+                        } else  -> {
                             val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
 
                             if (isThisFirstLaunch) {
@@ -548,8 +548,14 @@ private fun renderAlarm(
                         }
                     }
                 } else {
-                    checked = true
-                    viewModel.setAlarm(boss)
+                    val notificationManager = NotificationManagerCompat.from(context)
+
+                    if (notificationManager.areNotificationsEnabled()) {
+                        checked = true
+                        viewModel.setAlarm(boss)
+                    } else {
+                        openAlertDialog.value = true
+                    }
                 }
             } else {
                 viewModel.deleteAlarm(boss)
