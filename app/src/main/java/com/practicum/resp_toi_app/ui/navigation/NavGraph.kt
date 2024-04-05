@@ -3,19 +3,16 @@ package com.practicum.resp_toi_app.ui.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.practicum.resp_toi_app.ui.parts.MainScreen
-import com.practicum.resp_toi_app.ui.parts.RenderSettingsScreen
+import com.practicum.resp_toi_app.ui.parts.settingsScreen.RenderSettingsScreen
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
 

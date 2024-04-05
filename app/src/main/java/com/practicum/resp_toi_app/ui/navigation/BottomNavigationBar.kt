@@ -4,7 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.GenericShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -44,7 +47,8 @@ fun BottomNavigationBar(navController: NavController, viewModel: MainViewModel) 
 
     NavigationBar(
         containerColor = BottomNavColor,
-        modifier = Modifier.background(ThemeColor)
+        modifier = Modifier
+            .background(ThemeColor)
             .padding(top = 1.dp)
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -65,7 +69,11 @@ fun BottomNavigationBar(navController: NavController, viewModel: MainViewModel) 
                 },
                 icon = {
                     if (item.icon != null) {
-                        Icon(painter = painterResource(id = item.icon), contentDescription = "menu icon")
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = "menu icon",
+                            modifier = Modifier.size(24.dp)
+                        )
                     } else {
                         if (currentRoute == "main") {
                             ExposedMenu(viewModel)

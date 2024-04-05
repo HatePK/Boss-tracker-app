@@ -32,6 +32,8 @@ class PushNotificationService: FirebaseMessagingService() {
             val fullScreenIntent = Intent(this, NotificationActivity::class.java).apply {
                 putExtra("title", it["title"])
                 putExtra("body", it["body"])
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
 
             val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,

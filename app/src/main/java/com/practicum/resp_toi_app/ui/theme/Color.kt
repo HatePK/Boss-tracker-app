@@ -7,7 +7,6 @@ val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
 
-val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 val progressBarFillColor = Color(0xBB9AFF88)
@@ -22,7 +21,6 @@ val ThemeColor = Color(0xFF283E63)
 val ProgressBarColor = Color(0xFF92ACD8)
 val cardActiveLighterBackground = Color(4283143870)
 val CardAttentionColor = Color(0xFFF7D3D3)
-val CardConfirmedColor = Color(0xFFBFEBB7)
 
 val gradientBackGroundBrush = Brush.verticalGradient(
     colors = listOf(Color(0xFF283E63), Color(0xFF1F3753)),

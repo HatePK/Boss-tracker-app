@@ -22,11 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.practicum.resp_toi_app.R
 
 class NotificationActivity() : ComponentActivity() {
 
@@ -34,8 +36,8 @@ class NotificationActivity() : ComponentActivity() {
         showWhenLockedAndTurnScreenOn()
         super.onCreate(savedInstanceState)
 
-        var title: String? = "RESP-TOI"
-        var body: String? = "Оповещение о смерти РБ"
+        var title: String? = getString(R.string.notification_title)
+        var body: String? = getString(R.string.notification_description)
 
         if (intent.extras !== null) {
             title = intent.extras?.getString("title")
@@ -65,7 +67,9 @@ class NotificationActivity() : ComponentActivity() {
                     Icon(
                         Icons.Default.Notifications,
                         contentDescription = "notification",
-                        modifier = Modifier.padding(bottom = 80.dp).size(160.dp),
+                        modifier = Modifier
+                            .padding(bottom = 80.dp)
+                            .size(160.dp),
                         tint = Color.White
                     )
                     Button(
@@ -75,7 +79,10 @@ class NotificationActivity() : ComponentActivity() {
                             finish()
                         }
                     ) {
-                        Text(text = "Скрыть уведомление", style = TextStyle(color = Color.White))
+                        Text(
+                            text = stringResource(id = R.string.notification_button_hide),
+                            style = TextStyle(color = Color.White)
+                        )
                     }
                 }
 

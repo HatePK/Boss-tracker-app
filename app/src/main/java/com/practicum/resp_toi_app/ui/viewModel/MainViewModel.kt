@@ -1,34 +1,21 @@
 package com.practicum.resp_toi_app.ui.viewModel
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.CountDownTimer
-import android.os.Environment
-import android.provider.Settings
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.common.reflect.Reflection.getPackageName
 import com.practicum.resp_toi_app.domain.api.BossesInteractor
 import com.practicum.resp_toi_app.domain.entity.BossEntity
 import com.practicum.resp_toi_app.domain.entity.ServerEntity
 import com.practicum.resp_toi_app.utils.Resource
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
-import com.practicum.resp_toi_app.utils.refreshFcmToken
+import com.practicum.resp_toi_app.utils.functions.refreshFcmToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.subscribe
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.util.Properties
 import javax.inject.Inject
 
 

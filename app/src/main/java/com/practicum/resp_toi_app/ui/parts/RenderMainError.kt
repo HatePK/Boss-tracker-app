@@ -1,25 +1,19 @@
 package com.practicum.resp_toi_app.ui.parts
 
 import android.content.Context
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,9 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.theme.TextNoActive
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
@@ -78,7 +74,7 @@ fun RenderMainError(message: String, viewModel: MainViewModel) {
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = { viewModel.refresh() }
             ) {
-                Text(text = "Обновить")
+                Text(text = stringResource(id = R.string.refresh))
             }
         }
         PullRefreshIndicator(

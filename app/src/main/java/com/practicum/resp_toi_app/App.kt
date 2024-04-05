@@ -8,7 +8,7 @@ import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
-import com.practicum.resp_toi_app.utils.refreshFcmToken
+import com.practicum.resp_toi_app.utils.functions.refreshFcmToken
 import dagger.hilt.android.HiltAndroidApp
 
 

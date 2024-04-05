@@ -1,21 +1,16 @@
-package com.practicum.resp_toi_app.ui.parts
+package com.practicum.resp_toi_app.ui.parts.settingsScreen
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AppOpsManager
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.NameNotFoundException
-import android.net.Uri
-import android.os.Binder
 import android.os.Build
-import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,23 +23,21 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,47 +58,38 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.practicum.resp_toi_app.R
-import com.practicum.resp_toi_app.ui.navigation.BottomNavItem
-import com.practicum.resp_toi_app.ui.theme.BottomNavColor
 import com.practicum.resp_toi_app.ui.theme.CardAttentionColor
-import com.practicum.resp_toi_app.ui.theme.CardConfirmedColor
-import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.cardActiveLighterBackground
-import com.practicum.resp_toi_app.ui.theme.cardNoActiveAlarmBackground
-import com.practicum.resp_toi_app.ui.theme.cardNoActiveBackground
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
-import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
-import com.practicum.resp_toi_app.ui.viewModel.OneAlarmState
 import com.practicum.resp_toi_app.ui.viewModel.TestCallState
-import com.practicum.resp_toi_app.utils.PushNotificationService
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager.COMPACT_MODE
-import com.practicum.resp_toi_app.utils.SharedPreferencesManager.XIAOMI_BS
+import com.practicum.resp_toi_app.utils.functions.isShowOnLockScreenPermissionEnable
+import com.practicum.resp_toi_app.utils.functions.onDisplayPopupPermission
+import com.practicum.resp_toi_app.utils.functions.moveToGithubIntent
+import com.practicum.resp_toi_app.utils.functions.moveToNotificationsSettingsIntent
+import com.practicum.resp_toi_app.utils.functions.moveToTelegramIntent
+import com.practicum.resp_toi_app.utils.functions.showAlertDialog
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("ForegroundServiceType")
 @Composable
 fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -113,17 +97,17 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
     var timerButtonEnabled by remember { mutableStateOf(true) }
     var sheetTimerButtonText by remember { mutableStateOf("Запустить") }
     val context = LocalContext.current as Activity
-
+    val timer by viewModel.testCallTimer.collectAsState()
+    val testCallState = viewModel.testCallState.collectAsState()
+    val interactionSource = remember { MutableInteractionSource() }
+    val scope = rememberCoroutineScope()
+    var expandedState by remember { mutableStateOf(false) }
+    val rotationState by animateFloatAsState(
+        targetValue = if (expandedState) 180f else 0f, label = ""
+    )
     var xiaomiBottomSheetShow by remember {
         mutableStateOf(false)
     }
-
-    val timer by viewModel.testCallTimer.collectAsState()
-    val testCallState = viewModel.testCallState.collectAsState()
-
-    val interactionSource = remember { MutableInteractionSource() }
-
-    val scope = rememberCoroutineScope()
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -134,7 +118,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
             scope.launch {
                 SharedPreferencesManager.saveBoolean("Notifications", false)
                 snackBar.showSnackbar(
-                    message = "Ошибка: будильник не может быть установлен без разрешения на отправку уведомлений",
+                    message = context.getString(R.string.error_notifications_disabled_message),
                     duration = SnackbarDuration.Short
                 )
             }
@@ -144,31 +128,36 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
     when (testCallState.value) {
         is TestCallState.Loading -> {
             timerButtonEnabled = false
-            sheetTimerButtonText = "Отправка запроса..."
+            sheetTimerButtonText = stringResource(id = R.string.test_call_button_state_loading)
         }
         is TestCallState.Error -> {
-            Toast.makeText(LocalContext.current, "Ошибка при отправке запроса на сервер", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(id = R.string.test_call_server_error),
+                Toast.LENGTH_SHORT).show()
             viewModel.errorMessageShown()
         }
         is TestCallState.InProcess -> {
             timerButtonEnabled = false
-            sheetTimerButtonText = "Закройте приложение"
+            sheetTimerButtonText = stringResource(id = R.string.test_call_button_state_close_app)
         }
 
         is TestCallState.EnabledAfterUse -> {
-            sheetTimerButtonText = "Попробовать ещё раз"
+            sheetTimerButtonText = stringResource(id = R.string.test_call_button_state_try_again)
             timerButtonEnabled = true
         }
         is TestCallState.EnabledFirstTime -> {
             timerButtonEnabled = true
-            sheetTimerButtonText = "Запустить"
+            sheetTimerButtonText = stringResource(id = R.string.test_call_button_state_ready_to_launch)
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(brush = gradientBackGroundBrush)
-        .padding(horizontal = 6.dp, vertical = 12.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = gradientBackGroundBrush)
+            .padding(horizontal = 6.dp, vertical = 12.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         ElevatedCard(
             colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
@@ -183,19 +172,18 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                 modifier = Modifier.padding(vertical = 14.dp, horizontal = 14.dp)
             ) {
                 Text(
-                    text = "Это приложение полностью бесплатное",
+                    text = stringResource(id = R.string.about_header),
                     color = Color.White,
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 )
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
                     color = Color.White,
-                    text = "Я начинающий Android-разработчик и ищу работу! Если у вас есть друзья в этой сфере, я буду благодарен за рекомендацию."
+                    text = stringResource(id = R.string.about_first),
                 )
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
                     color = Color.White,
-                    text = "Спасибо, что ставите оценки в Google Play и на мою страницу в GitHub, это сильно помогает мне в портфолио."
+                    text = stringResource(id = R.string.about_second),
                 )
                 Row (
                     modifier = Modifier
@@ -204,9 +192,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                             interactionSource = interactionSource,
                             indication = null
                         ) {
-                            val openTelegram = Intent(Intent.ACTION_VIEW)
-                            openTelegram.setData(Uri.parse("https://github.com/HatePK/Boss-tracker-app"))
-
+                            val openTelegram = moveToGithubIntent()
                             context.startActivity(openTelegram)
                         }
                 ) {
@@ -219,7 +205,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         modifier = Modifier
                             .padding(start = 10.dp)
                             .align(Alignment.CenterVertically),
-                        text = "Поставить звезду на GitHub",
+                        text = stringResource(id = R.string.github_link_name),
                         style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold)
                     )
                 }
@@ -234,19 +220,74 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                     onDismissRequest = { openAlertDialog.value = false },
                     onConfirmation = {
                         openAlertDialog.value = false
-                        val intent = Intent("android.settings.APP_NOTIFICATION_SETTINGS")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                        intent.putExtra("app_package", context.packageName);
-                        intent.putExtra("app_uid", context.applicationInfo.uid);
-                        intent.putExtra("android.provider.extra.APP_PACKAGE", context.packageName);
-
+                        val intent = moveToNotificationsSettingsIntent(context)
                         context.startActivity(intent)
                     },
-                    dialogTitle = "Нет разрешения на отправку уведомлений",
-                    dialogText = "Чтобы поставить будильник, перейдите в настройки и выдайте разрешение.",
+                    dialogTitle = stringResource(id = R.string.alert_dialog_notifications_header),
+                    dialogText = stringResource(id = R.string.alert_dialog_notifications_description),
                     icon = Icons.Default.Info
                 )
+            }
+        }
+
+        ElevatedCard(
+            colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+                .animateContentSize(
+                    animationSpec = tween(
+                        durationMillis = 300,
+                        easing = LinearOutSlowInEasing
+                    )
+                ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+            onClick = {
+                expandedState = !expandedState
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(14.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Box(modifier = Modifier.width(30.dp)) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = "Info icon",
+                                modifier = Modifier.padding(end = 6.dp),
+                                tint = Color.White
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = R.string.settings_menu_button_how_it_works),
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 1.dp),
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "dropdown",
+                        tint = Color.White,
+                        modifier = Modifier.rotate(rotationState)
+                    )
+                }
+                
+                if (expandedState) {
+                    Text(
+                        modifier = Modifier.padding(top = 14.dp),
+                        text = stringResource(id = R.string.settings_menu_how_it_works_description),
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
 
@@ -297,7 +338,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         )
                     }
                     Text(
-                        text = "Протестировать будильник",
+                        text = stringResource(id = R.string.settings_menu_button_test_call),
                         color = Color.White,
                         modifier = Modifier.padding(top = 2.dp),
                     )
@@ -312,14 +353,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
 
         TextButton(
             onClick = {
-                val openTelegram = Intent(Intent.ACTION_VIEW)
-                val appName = "org.telegram.messenger"
-
-                openTelegram.setData(Uri.parse("https://t.me/dima_ret"))
-
-                if (isAppAvailable(context, appName)) {
-                    openTelegram.setPackage(appName)
-                }
+                val openTelegram = moveToTelegramIntent(context)
                 context.startActivity(openTelegram)
             },
             modifier = Modifier
@@ -339,7 +373,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         )
                     }
                     Text(
-                        text = "Написать в Telegram",
+                        text = stringResource(id = R.string.settings_menu_button_telegram),
                         color = Color.White,
                         )
                 }
@@ -374,7 +408,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                     tint = Color.White
                 )
                 Text(
-                    text = "Компактный режим",
+                    text = stringResource(id = R.string.settings_menu_button_compact_mode),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     color = Color.White,
@@ -421,18 +455,14 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (isShowOnLockScreenPermissionEnable != null) {
+                    if (isShowOnLockScreenPermissionEnable == false) {
                         ElevatedCard(
                             modifier = Modifier
                                 .padding(bottom = 20.dp)
                                 .fillMaxWidth(),
                             elevation = CardDefaults.cardElevation(6.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isShowOnLockScreenPermissionEnable == false) {
-                                    CardAttentionColor
-                                } else {
-                                    CardConfirmedColor
-                                }
+                                containerColor = CardAttentionColor
                             )
                         ) {
                             Row(
@@ -448,53 +478,32 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                                     Icon(
                                         imageVector = Icons.Default.Info,
                                         contentDescription = "warn icon",
-                                        tint = if (isShowOnLockScreenPermissionEnable == false) {
-                                            Color.Red
-                                        } else {
-                                            SwitchThumbGreenColor
-                                        }
+                                        tint = Color.Red
                                     )
                                     Text(
                                         modifier = Modifier
                                             .fillMaxWidth(0.65f)
                                             .padding(horizontal = 6.dp),
-                                        text = if (isShowOnLockScreenPermissionEnable == false) {
-                                            "Смартфонам Xiaomi нужно специальное разрешение"
-                                        } else {
-                                            "Разрешение получено"
-                                        },
-                                        color = if (isShowOnLockScreenPermissionEnable == false) {
-                                            Color.Black
-                                        } else {
-                                            SwitchThumbGreenColor
-                                        },
+                                        text = stringResource(id = R.string.xiaomi_permission_alert_header),
+                                        color = Color.Black,
                                         fontSize = 12.sp,
                                         lineHeight = 13.sp
                                     )
                                 }
-                                if (isShowOnLockScreenPermissionEnable == false) {
-                                    TextButton(
-                                        onClick = {
-                                            showBottomSheet = false
-                                            xiaomiBottomSheetShow = true
-                                        },
-                                    ) {
-                                        Text(text = "Включить")
-                                    }
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Default.Check,
-                                        contentDescription = "check icon",
-                                        tint = SwitchThumbGreenColor,
-                                        modifier = Modifier.size(30.dp)
-                                    )
+                                TextButton(
+                                    onClick = {
+                                        showBottomSheet = false
+                                        xiaomiBottomSheetShow = true
+                                    },
+                                ) {
+                                    Text(text = stringResource(id = R.string.xiaomi_permission_alert_button))
                                 }
                             }
                         }
                     }
                     Text(
                         textAlign = TextAlign.Center,
-                        text = "Через 30 секунд после запуска, вам на телефон поступит тестовый будильник. Чтобы убедиться, что всё работает правильно, полностью закройте приложение и заблокируйте экран."
+                        text = stringResource(id = R.string.test_call_description)
                     )
                     Text(
                         modifier = Modifier.padding(vertical = 20.dp),
@@ -531,12 +540,12 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                 Text(
                     modifier = Modifier.padding(bottom = 10.dp),
                     style = TextStyle(fontSize = 24.sp),
-                    text = "Кажется, у вас Xiaomi"
+                    text = stringResource(id = R.string.xiaomi_permission_explain_header)
                 )
                 Text(
                     modifier = Modifier.padding(bottom = 10.dp),
                     textAlign = TextAlign.Center,
-                    text = "Будильник может не отображаться на заблокированном экране. Включите разрешение «Экран блокировки», чтобы всё работало как надо."
+                    text = stringResource(id = R.string.xiaomi_permission_explain_description)
                 )
 
                 ElevatedCard(
@@ -566,111 +575,9 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         onDisplayPopupPermission(context)
                     }
                 ) {
-                    Text("Выдать разрешение")
+                    Text(stringResource(id = R.string.xiaomi_permission_explain_move_to_settings_button))
                 }
             }
         }
-    }
-}
-
-private fun isAppAvailable(context: Context, appName: String?): Boolean {
-    val pm = context.packageManager
-    return try {
-        pm.getPackageInfo(appName!!, PackageManager.GET_ACTIVITIES)
-        true
-    } catch (e: NameNotFoundException) {
-        false
-    }
-}
-
-@Composable
-private fun showAlertDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String,
-    icon: ImageVector,
-) {
-    AlertDialog(
-        icon = {
-            Icon(icon, contentDescription = "Example Icon")
-        },
-        title = {
-            Text(text = dialogTitle)
-        },
-        text = {
-            Text(text = dialogText)
-        },
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
-            ) {
-                Text("Перейти в настройки")
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
-                Text("Отклонить")
-            }
-        }
-    )
-}
-
-private fun onDisplayPopupPermission(context: Context) {
-    try {
-        // MIUI 8
-        val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
-        localIntent.setClassName(
-            "com.miui.securitycenter",
-            "com.miui.permcenter.permissions.PermissionsEditorActivity"
-        )
-        localIntent.putExtra("extra_pkgname", context.packageName)
-        context.startActivity(localIntent)
-        return
-    } catch (ignore: Exception) {
-    }
-    try {
-        // MIUI 5/6/7
-        val localIntent = Intent("miui.intent.action.APP_PERM_EDITOR")
-        localIntent.setClassName(
-            "com.miui.securitycenter",
-            "com.miui.permcenter.permissions.AppPermissionsEditorActivity"
-        )
-        localIntent.putExtra("extra_pkgname", context.packageName)
-        context.startActivity(localIntent)
-        return
-    } catch (ignore: Exception) {
-    }
-    // Otherwise jump to application details
-    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-    val uri = Uri.fromParts("package", context.packageName, null)
-    intent.setData(uri)
-    context.startActivity(intent)
-}
-
-@SuppressLint("DiscouragedPrivateApi")
-private fun isShowOnLockScreenPermissionEnable(context: Context): Boolean? {
-    return try {
-        val manager = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val method = AppOpsManager::class.java.getDeclaredMethod(
-            "checkOpNoThrow",
-            Int::class.javaPrimitiveType,
-            Int::class.javaPrimitiveType,
-            String::class.java
-        )
-        val result =
-            method.invoke(manager, 10020, Binder.getCallingUid(), context.packageName) as Int
-        AppOpsManager.MODE_ALLOWED == result
-    } catch (e: Exception) {
-        null
     }
 }
