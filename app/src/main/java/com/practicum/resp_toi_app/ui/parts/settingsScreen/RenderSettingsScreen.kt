@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -165,7 +166,7 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                 .fillMaxWidth()
                 .padding(12.dp),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
+                defaultElevation = 3.dp
             )
         ) {
             Column(
@@ -230,20 +231,17 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
             }
         }
 
-        ElevatedCard(
+        Card(
             colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 6.dp)
                 .animateContentSize(
                     animationSpec = tween(
                         durationMillis = 300,
                         easing = LinearOutSlowInEasing
                     )
                 ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
-            ),
             onClick = {
                 expandedState = !expandedState
             }

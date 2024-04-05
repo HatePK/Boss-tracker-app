@@ -20,7 +20,7 @@
     <string name="settings_menu_button_test_call">Протестировать будильник</string>
     <string name="settings_menu_button_telegram">Написать в Telegram</string>
     <string name="settings_menu_button_compact_mode">Компактный режим</string>
-    <string name="settings_menu_how_it_works_description">Будильник срабатывает после смерти выбранного рейд босса в случайном диапозоне (от 1 до 90 секунд), после чего на смартфон отправляется пуш-уведомление.\n\nТаким образом, на прохождение квеста у вас будет от полутора до трёх минут.</string>
+    <string name="settings_menu_how_it_works_description">Будильник срабатывает после смерти выбранного рейд босса в случайном диапазоне (от 1 до 90 секунд), после чего на смартфон отправляется пуш-уведомление.\n\nТаким образом, на прохождение квеста у вас будет от полутора до трёх минут.</string>
 
 
     <string name="xiaomi_permission_alert_header">Смартфонам Xiaomi нужно специальное разрешение</string>
