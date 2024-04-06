@@ -157,148 +157,148 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
         modifier = Modifier
             .fillMaxSize()
             .background(brush = gradientBackGroundBrush)
-            .padding(horizontal = 6.dp, vertical = 12.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        ElevatedCard(
-            colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 3.dp
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(vertical = 14.dp, horizontal = 14.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.about_header),
-                    color = Color.White,
-                )
-                Text(
-                    modifier = Modifier.padding(top = 18.dp),
-                    color = Color.White,
-                    text = stringResource(id = R.string.about_first),
-                )
-                Text(
-                    modifier = Modifier.padding(top = 18.dp),
-                    color = Color.White,
-                    text = stringResource(id = R.string.about_second),
-                )
-                Row (
-                    modifier = Modifier
-                        .padding(top = 22.dp)
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null
-                        ) {
-                            val openTelegram = moveToGithubIntent()
-                            context.startActivity(openTelegram)
-                        }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Github star",
-                        tint = Color.Yellow
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 10.dp)
-                            .align(Alignment.CenterVertically),
-                        text = stringResource(id = R.string.github_link_name),
-                        style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold)
-                    )
-                }
-            }
-        }
-
-        val openAlertDialog = remember { mutableStateOf(false) }
-
-        when {
-            openAlertDialog.value -> {
-                showAlertDialog(
-                    onDismissRequest = { openAlertDialog.value = false },
-                    onConfirmation = {
-                        openAlertDialog.value = false
-                        val intent = moveToNotificationsSettingsIntent(context)
-                        context.startActivity(intent)
-                    },
-                    dialogTitle = stringResource(id = R.string.alert_dialog_notifications_header),
-                    dialogText = stringResource(id = R.string.alert_dialog_notifications_description),
-                    icon = Icons.Default.Info
-                )
-            }
-        }
-
-        Card(
-            colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp, top = 6.dp)
-                .animateContentSize(
-                    animationSpec = tween(
-                        durationMillis = 300,
-                        easing = LinearOutSlowInEasing
-                    )
-                ),
-            onClick = {
-                expandedState = !expandedState
-            }
-        ) {
-            Column(
+        Column(modifier = Modifier.padding(horizontal = 6.dp, vertical = 10.dp)) {
+            ElevatedCard(
+                colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(14.dp)
+                    .padding(12.dp),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 3.dp
+                )
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Column(
+                    modifier = Modifier.padding(vertical = 14.dp, horizontal = 14.dp)
                 ) {
-                    Row {
-                        Box(modifier = Modifier.width(30.dp)) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = "Info icon",
-                                modifier = Modifier.padding(end = 6.dp),
-                                tint = Color.White
-                            )
-                        }
+                    Text(
+                        text = stringResource(id = R.string.about_header),
+                        color = Color.White,
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 18.dp),
+                        color = Color.White,
+                        text = stringResource(id = R.string.about_first),
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 18.dp),
+                        color = Color.White,
+                        text = stringResource(id = R.string.about_second),
+                    )
+                    Row (
+                        modifier = Modifier
+                            .padding(top = 22.dp)
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                val openTelegram = moveToGithubIntent()
+                                context.startActivity(openTelegram)
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Github star",
+                            tint = Color.Yellow
+                        )
                         Text(
-                            text = stringResource(id = R.string.settings_menu_button_how_it_works),
-                            color = Color.White,
-                            modifier = Modifier.padding(top = 1.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .align(Alignment.CenterVertically),
+                            text = stringResource(id = R.string.github_link_name),
+                            style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold)
                         )
                     }
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "dropdown",
-                        tint = Color.White,
-                        modifier = Modifier.rotate(rotationState)
-                    )
                 }
-                
-                if (expandedState) {
-                    Text(
-                        modifier = Modifier.padding(top = 14.dp),
-                        text = stringResource(id = R.string.settings_menu_how_it_works_description),
-                        color = Color.White,
-                        fontSize = 14.sp
+            }
+
+            val openAlertDialog = remember { mutableStateOf(false) }
+
+            when {
+                openAlertDialog.value -> {
+                    showAlertDialog(
+                        onDismissRequest = { openAlertDialog.value = false },
+                        onConfirmation = {
+                            openAlertDialog.value = false
+                            val intent = moveToNotificationsSettingsIntent(context)
+                            context.startActivity(intent)
+                        },
+                        dialogTitle = stringResource(id = R.string.alert_dialog_notifications_header),
+                        dialogText = stringResource(id = R.string.alert_dialog_notifications_description),
+                        icon = Icons.Default.Info
                     )
                 }
             }
-        }
 
-        TextButton(
-            onClick = {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    when (PackageManager.PERMISSION_GRANTED) {
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) -> {
-                            showBottomSheet = true
-                        } else  -> {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = backgroundCardColor),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp, top = 6.dp)
+                    .animateContentSize(
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearOutSlowInEasing
+                        )
+                    ),
+                onClick = {
+                    expandedState = !expandedState
+                }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row {
+                            Box(modifier = Modifier.width(30.dp)) {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = "Info icon",
+                                    modifier = Modifier.padding(end = 6.dp),
+                                    tint = Color.White
+                                )
+                            }
+                            Text(
+                                text = stringResource(id = R.string.settings_menu_button_how_it_works),
+                                color = Color.White,
+                                modifier = Modifier.padding(top = 1.dp),
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = "dropdown",
+                            tint = Color.White,
+                            modifier = Modifier.rotate(rotationState)
+                        )
+                    }
+
+                    if (expandedState) {
+                        Text(
+                            modifier = Modifier.padding(top = 14.dp),
+                            text = stringResource(id = R.string.settings_menu_how_it_works_description),
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+
+            TextButton(
+                onClick = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        when (PackageManager.PERMISSION_GRANTED) {
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) -> {
+                                showBottomSheet = true
+                            } else  -> {
                             val isThisFirstLaunch = SharedPreferencesManager.getBoolean("Notifications", true)
 
                             if (isThisFirstLaunch) {
@@ -307,215 +307,216 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                                 openAlertDialog.value = true
                             }
                         }
-                    }
-                } else {
-                    val notificationManager = NotificationManagerCompat.from(context)
-
-                    if (notificationManager.areNotificationsEnabled()) {
-                        showBottomSheet = true
+                        }
                     } else {
-                        openAlertDialog.value = true
+                        val notificationManager = NotificationManagerCompat.from(context)
+
+                        if (notificationManager.areNotificationsEnabled()) {
+                            showBottomSheet = true
+                        } else {
+                            openAlertDialog.value = true
+                        }
                     }
-                }
-            },
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .fillMaxWidth(),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                },
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth(),
             ) {
-                Row {
-                    Box(modifier = Modifier.width(30.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "Notification check",
-                            modifier = Modifier.padding(end = 6.dp),
-                            tint = Color.White
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Box(modifier = Modifier.width(30.dp)) {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = "Notification check",
+                                modifier = Modifier.padding(end = 6.dp),
+                                tint = Color.White
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = R.string.settings_menu_button_test_call),
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 2.dp),
                         )
                     }
-                    Text(
-                        text = stringResource(id = R.string.settings_menu_button_test_call),
-                        color = Color.White,
-                        modifier = Modifier.padding(top = 2.dp),
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        contentDescription = "do",
+                        tint = Color.White
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "do",
-                    tint = Color.White
-                )
             }
-        }
 
-        TextButton(
-            onClick = {
-                val openTelegram = moveToTelegramIntent(context)
-                context.startActivity(openTelegram)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+            TextButton(
+                onClick = {
+                    val openTelegram = moveToTelegramIntent(context)
+                    context.startActivity(openTelegram)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Row {
-                    Box(modifier = Modifier.width(30.dp)) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_telegram),
-                            contentDescription = "send message",
-                            modifier = Modifier.padding(start = 2.dp, end = 6.dp),
-                            tint = Color.White
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Row {
+                        Box(modifier = Modifier.width(30.dp)) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_telegram),
+                                contentDescription = "send message",
+                                modifier = Modifier.padding(start = 2.dp, end = 6.dp),
+                                tint = Color.White
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = R.string.settings_menu_button_telegram),
+                            color = Color.White,
                         )
                     }
-                    Text(
-                        text = stringResource(id = R.string.settings_menu_button_telegram),
-                        color = Color.White,
-                        )
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        contentDescription = "do",
+                        tint = Color.White
+                    )
                 }
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "do",
-                    tint = Color.White
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp, end = 12.dp, top = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            var isChecked by remember {
-                mutableStateOf(SharedPreferencesManager.getBoolean(COMPACT_MODE, true))
-            }
-
-            SharedPreferencesManager.subscribe(COMPACT_MODE) {
-                isChecked = SharedPreferencesManager.getBoolean(COMPACT_MODE, true)
             }
             Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 12.dp, top = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_minimize),
-                    contentDescription = "send message",
-                    modifier = Modifier.padding(start = 2.dp, end = 8.dp),
-                    tint = Color.White
-                )
-                Text(
-                    text = stringResource(id = R.string.settings_menu_button_compact_mode),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = Color.White,
+                var isChecked by remember {
+                    mutableStateOf(SharedPreferencesManager.getBoolean(COMPACT_MODE, true))
+                }
+
+                SharedPreferencesManager.subscribe(COMPACT_MODE) {
+                    isChecked = SharedPreferencesManager.getBoolean(COMPACT_MODE, true)
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_minimize),
+                        contentDescription = "send message",
+                        modifier = Modifier.padding(start = 2.dp, end = 8.dp),
+                        tint = Color.White
+                    )
+                    Text(
+                        text = stringResource(id = R.string.settings_menu_button_compact_mode),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = Color.White,
+                    )
+                }
+                Switch(
+                    checked = isChecked,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = backgroundCardColor,
+                        checkedTrackColor = cardActiveLighterBackground,
+                        uncheckedThumbColor = Color.Gray,
+                        uncheckedBorderColor = Color.Transparent
+                    ),
+                    thumbContent = if (isChecked) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                tint = Color.White
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    onCheckedChange = {
+                        SharedPreferencesManager.saveBoolean(COMPACT_MODE, it)
+                    }
                 )
             }
-            Switch(
-                checked = isChecked,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = backgroundCardColor,
-                    checkedTrackColor = cardActiveLighterBackground,
-                    uncheckedThumbColor = Color.Gray,
-                    uncheckedBorderColor = Color.Transparent
-                ),
-                thumbContent = if (isChecked) {
-                    {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                            tint = Color.White
-                        )
-                    }
-                } else {
-                    null
-                },
-                onCheckedChange = {
-                    SharedPreferencesManager.saveBoolean(COMPACT_MODE, it)
-                }
-            )
-        }
 
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                },
-                sheetState = sheetState
-            ) {
-                val isShowOnLockScreenPermissionEnable = isShowOnLockScreenPermissionEnable(context)
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
                 ) {
-                    if (isShowOnLockScreenPermissionEnable == false) {
-                        ElevatedCard(
-                            modifier = Modifier
-                                .padding(bottom = 20.dp)
-                                .fillMaxWidth(),
-                            elevation = CardDefaults.cardElevation(6.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = CardAttentionColor
-                            )
-                        ) {
-                            Row(
+                    val isShowOnLockScreenPermissionEnable = isShowOnLockScreenPermissionEnable(context)
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (isShowOnLockScreenPermissionEnable == false) {
+                            ElevatedCard(
                                 modifier = Modifier
-                                    .padding(6.dp)
+                                    .padding(bottom = 20.dp)
                                     .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                elevation = CardDefaults.cardElevation(6.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = CardAttentionColor
+                                )
                             ) {
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier
+                                        .padding(6.dp)
+                                        .fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Info,
-                                        contentDescription = "warn icon",
-                                        tint = Color.Red
-                                    )
-                                    Text(
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.65f)
-                                            .padding(horizontal = 6.dp),
-                                        text = stringResource(id = R.string.xiaomi_permission_alert_header),
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        lineHeight = 13.sp
-                                    )
-                                }
-                                TextButton(
-                                    onClick = {
-                                        showBottomSheet = false
-                                        xiaomiBottomSheetShow = true
-                                    },
-                                ) {
-                                    Text(text = stringResource(id = R.string.xiaomi_permission_alert_button))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Info,
+                                            contentDescription = "warn icon",
+                                            tint = Color.Red
+                                        )
+                                        Text(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.65f)
+                                                .padding(horizontal = 6.dp),
+                                            text = stringResource(id = R.string.xiaomi_permission_alert_header),
+                                            color = Color.Black,
+                                            fontSize = 12.sp,
+                                            lineHeight = 13.sp
+                                        )
+                                    }
+                                    TextButton(
+                                        onClick = {
+                                            showBottomSheet = false
+                                            xiaomiBottomSheetShow = true
+                                        },
+                                    ) {
+                                        Text(text = stringResource(id = R.string.xiaomi_permission_alert_button))
+                                    }
                                 }
                             }
                         }
-                    }
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = stringResource(id = R.string.test_call_description)
-                    )
-                    Text(
-                        modifier = Modifier.padding(vertical = 20.dp),
-                        style = TextStyle(fontSize = 74.sp),
-                        text = "00:$timer"
-                    )
-                    Button(
-                        modifier = Modifier.padding(bottom = (WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().value + 20).dp ),
-                        enabled = timerButtonEnabled,
-                        onClick = {
-                            viewModel.setTestCall()
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = stringResource(id = R.string.test_call_description)
+                        )
+                        Text(
+                            modifier = Modifier.padding(vertical = 20.dp),
+                            style = TextStyle(fontSize = 74.sp),
+                            text = "00:$timer"
+                        )
+                        Button(
+                            modifier = Modifier.padding(bottom = (WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().value + 20).dp ),
+                            enabled = timerButtonEnabled,
+                            onClick = {
+                                viewModel.setTestCall()
+                            }
+                        ) {
+                            Text(sheetTimerButtonText)
                         }
-                    ) {
-                        Text(sheetTimerButtonText)
                     }
                 }
             }
