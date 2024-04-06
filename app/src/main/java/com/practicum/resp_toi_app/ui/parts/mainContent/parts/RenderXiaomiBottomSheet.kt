@@ -90,6 +90,7 @@ fun RenderXiaomiBottomSheet(
                 Button(
                     modifier = Modifier.padding(vertical = 10.dp),
                     onClick = {
+                        viewModel.closeXiaomiBottomSheet()
                         onDisplayPopupPermission(context)
                     }
                 ) {

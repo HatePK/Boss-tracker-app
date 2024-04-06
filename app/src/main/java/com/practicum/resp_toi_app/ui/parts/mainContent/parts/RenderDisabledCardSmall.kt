@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +28,7 @@ import com.practicum.resp_toi_app.ui.theme.TextNoActive
 import com.practicum.resp_toi_app.ui.theme.cardNoActiveBackground
 import com.practicum.resp_toi_app.ui.viewModel.AlarmsState
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
+import com.practicum.resp_toi_app.utils.FormatTimezoneManager.countTimeZone
 import com.practicum.resp_toi_app.utils.functions.countTimeBeforeResp
 
 @Composable
@@ -69,13 +71,13 @@ fun RenderDisabledCardSmall(
                     modifier = Modifier.padding(top = 10.dp),
                     style = TextStyle(fontSize = 14.sp),
                     color = TextNoActive,
-                    text = "${item.respStart} — ${item.respEnd} МСК"
+                    text = "${countTimeZone(item.respStart)} — ${countTimeZone(item.respEnd)}"
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
                     style = TextStyle(fontSize = 12.sp),
                     color = TextNoActive,
-                    text = "Респ начнется через ${countTimeBeforeResp(item.timeFromDeath)}"
+                    text = "${stringResource(id = R.string.card_resp_begin_after_message)} ${countTimeBeforeResp(item.timeFromDeath)}"
                 )
             }
             Row(

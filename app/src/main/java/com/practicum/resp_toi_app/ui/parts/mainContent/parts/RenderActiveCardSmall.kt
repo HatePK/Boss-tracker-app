@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +36,7 @@ import com.practicum.resp_toi_app.ui.theme.progressBarBackground
 import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
 import com.practicum.resp_toi_app.ui.viewModel.AlarmsState
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
+import com.practicum.resp_toi_app.utils.FormatTimezoneManager.countTimeZone
 import com.practicum.resp_toi_app.utils.functions.countPercentage
 import com.practicum.resp_toi_app.utils.functions.countTimeFromRespStarted
 
@@ -49,6 +51,7 @@ fun RenderActiveCardSmall(
     val progressPercentage by remember {
         mutableFloatStateOf(countPercentage(item.timeFromDeath))
     }
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,13 +90,13 @@ fun RenderActiveCardSmall(
                         modifier = Modifier.padding(top = 10.dp),
                         style = TextStyle(fontSize = 14.sp),
                         color = Color.White,
-                        text = "${item.respStart} — ${item.respEnd} МСК"
+                        text = "${countTimeZone(item.respStart)} — ${countTimeZone(item.respEnd)}"
                     )
                     Text(
                         modifier = Modifier.padding(top = 10.dp),
                         style = TextStyle(fontSize = 12.sp),
                         color = Color.White,
-                        text = "Респ идет уже ${countTimeFromRespStarted(
+                        text = "${stringResource(R.string.card_resp_on_message)} ${countTimeFromRespStarted(
                             timeFromDeath = item.timeFromDeath,
                             textFormat = true
                         )}"

@@ -19,7 +19,10 @@ fun countPercentage(timeFromDeath: Int): Float {
     return (1f / 720f) * (timeFromDeath - 1080)
 }
 
-fun countTimeFromRespStarted(timeFromDeath: Int, textFormat: Boolean) : String {
+fun countTimeFromRespStarted(
+    timeFromDeath: Int,
+    textFormat: Boolean
+) : String {
     val hours = (timeFromDeath - 1080) / 60
     val minutes = (timeFromDeath - 1080) % 60
 

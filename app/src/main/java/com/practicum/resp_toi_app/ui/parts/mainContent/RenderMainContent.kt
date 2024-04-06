@@ -16,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.domain.entity.BossEntity
 import com.practicum.resp_toi_app.ui.parts.mainContent.parts.RenderActiveCard
 import com.practicum.resp_toi_app.ui.parts.mainContent.parts.RenderActiveCardSmall
@@ -35,6 +37,7 @@ import com.practicum.resp_toi_app.utils.SharedPreferencesManager.COMPACT_MODE
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,8 +66,14 @@ fun RenderMainContent(
         ) {
             item {
                 Text(
-                    modifier = Modifier.padding(5.dp, vertical = 10.dp),
-                    text = "Страница обновляется автоматически раз в минуту. Чтобы обновить принудительно, потяните вверх.",
+                    modifier = Modifier.padding(5.dp, top = 10.dp, bottom = 6.dp),
+                    text = stringResource(id = R.string.main_comment),
+                    style = TextStyle(fontSize = 14.sp),
+                    color = TextNoActive
+                )
+                Text(
+                    modifier = Modifier.padding(5.dp, bottom = 10.dp),
+                    text = "${stringResource(id = R.string.main_comment_timezone)} ${TimeZone.getDefault().id}",
                     style = TextStyle(fontSize = 14.sp),
                     color = TextNoActive
                 )

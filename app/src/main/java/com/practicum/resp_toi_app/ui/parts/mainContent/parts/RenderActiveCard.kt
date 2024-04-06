@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import com.practicum.resp_toi_app.ui.theme.progressBarBackground
 import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
 import com.practicum.resp_toi_app.ui.viewModel.AlarmsState
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
+import com.practicum.resp_toi_app.utils.FormatTimezoneManager.countTimeZone
 import com.practicum.resp_toi_app.utils.functions.countPercentage
 import com.practicum.resp_toi_app.utils.functions.countTimeBeforeResp
 import com.practicum.resp_toi_app.utils.functions.countTimeFromRespStarted
@@ -51,7 +53,6 @@ fun RenderActiveCard(
     snackBar: SnackbarHostState,
     cardPadding: PaddingValues
 ) {
-
     val progressPercentage by remember {
         mutableFloatStateOf(countPercentage(item.timeFromDeath))
     }
@@ -99,13 +100,13 @@ fun RenderActiveCard(
                         modifier = Modifier.padding(top = 18.dp),
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White,
-                        text = "${item.respStart} — ${item.respEnd} МСК"
+                        text = "${countTimeZone(item.respStart)} — ${countTimeZone(item.respEnd)}"
                     )
                     Text(
                         modifier = Modifier.padding(top = 18.dp),
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White,
-                        text = "До конца ${countTimeBeforeResp(item.timeFromDeath)}"
+                        text = "${stringResource(R.string.card_resp_on_untill_message)} ${countTimeBeforeResp(item.timeFromDeath)}"
                     )
                 }
                 Box(
@@ -125,7 +126,7 @@ fun RenderActiveCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Респ идёт уже",
+                            text = stringResource(R.string.card_resp_on_message),
                             style = TextStyle(fontSize = 12.sp),
                             color = Color.White
                         )

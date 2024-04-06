@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.theme.SwitchThumbGreenColor
 import com.practicum.resp_toi_app.ui.theme.progressBarFillColor
 import com.practicum.resp_toi_app.ui.viewModel.MainViewModel
@@ -51,8 +52,8 @@ fun RenderAlarm(
                     val intent = moveToNotificationsSettingsIntent(context)
                     context.startActivity(intent)
                 },
-                dialogTitle = "Нет разрешения на отправку уведомлений",
-                dialogText = "Чтобы поставить будильник, перейдите в настройки и выдайте разрешение.",
+                dialogTitle = context.getString(R.string.alert_dialog_notifications_header),
+                dialogText = context.getString(R.string.alert_dialog_notifications_description),
                 icon = Icons.Default.Info
             )
         }
@@ -67,7 +68,7 @@ fun RenderAlarm(
             scope.launch {
                 SharedPreferencesManager.saveBoolean("Notifications", false)
                 snackBar.showSnackbar(
-                    message = "Ошибка: будильник не может быть установлен без разрешения на отправку уведомлений",
+                    message = context.getString(R.string.error_notifications_disabled_message),
                     duration = SnackbarDuration.Short
                 )
             }

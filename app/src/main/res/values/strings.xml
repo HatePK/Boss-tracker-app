@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Resp-toi App</string>
+    <string name="main_comment">Страница обновляется автоматически раз в минуту. Чтобы обновить принудительно, потяните вверх.</string>
+    <string name="main_comment_timezone">Время показывается в вашем часовом поясе: </string>
+
     <string name="error_notifications_disabled_message">Ошибка: будильник не может быть установлен без разрешения на отправку уведомлений</string>
     <string name="test_call_server_error">Ошибка при отправке запроса на сервер</string>
 
@@ -15,14 +18,16 @@
 
     <string name="alert_dialog_notifications_header">Нет разрешения на отправку уведомлений</string>
     <string name="alert_dialog_notifications_description">Чтобы поставить будильник, перейдите в настройки и выдайте разрешение</string>
+    <string name="alert_dialog_to_settings_button">Перейти в настройки</string>
+    <string name="alert_dialog_refuse">Отклонить</string>
 
     <string name="settings_menu_button_how_it_works">Как это работает?</string>
     <string name="settings_menu_button_test_call">Протестировать будильник</string>
     <string name="settings_menu_button_telegram">Написать в Telegram</string>
     <string name="settings_menu_button_compact_mode">Компактный режим</string>
-    <string name="settings_menu_how_it_works_description">Если будильник включен, после смерти рейд босса вам на смартфон поступает «звонок». Время жизни сундука после смерти РБ – 3 минуты.\n</string>
+    <string name="settings_menu_how_it_works_description">Если будильник включен, после смерти рейд босса вам на смартфон поступит «звонок». У вас будет до трёх минут, чтобы пройти квест.\n</string>
     <string name="settings_menu_how_it_works_quote_header">Почему звонок не пришел или пришел с задержкой?\n</string>
-    <string name="settings_menu_how_it_works_quote">Со стороны сервера информация отправляется как правило в течение первой минуты, но на стороне Android могут быть дополнительные задержки с получением уведомления.\n\nНекоторые Android смартфоны могут переходить в Doze режим для экономии ресурсов, и интервал проверки уведомлений увеличивается. Чтобы повысить шансы получить звонок моментально, советую держать телефон на зарядке.</string>
+    <string name="settings_menu_how_it_works_quote">Со стороны сервера информация отправляется как правило в течение первой минуты, но на стороне Android могут быть дополнительные задержки с получением уведомления.\n\nНекоторые Android смартфоны могут переходить в Doze режим для экономии ресурсов, и интервал проверки уведомлений увеличивается. Чтобы повысить шанс получить звонок моментально, советую держать телефон на зарядке.</string>
 
 
     <string name="xiaomi_permission_alert_header">Смартфонам Xiaomi нужно специальное разрешение</string>
@@ -39,5 +44,12 @@
     <string name="notification_title">RESP-TOI</string>
     <string name="notification_description">Оповещение о смерти РБ</string>
     <string name="notification_button_hide">Скрыть уведомление</string>
+
+    <string name="card_resp_on_message">Респ идёт уже</string>
+    <string name="card_resp_on_untill_message">До конца</string>
+    <string name="card_resp_begin_after_message">Респ начнется через</string>
+    <string name="card_alarm_error">Err</string>
+    <string name="card_MSK">МСК</string>
+
 
 </resources>
