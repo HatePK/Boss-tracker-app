@@ -66,6 +66,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -74,6 +75,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.theme.CardAttentionColor
+import com.practicum.resp_toi_app.ui.theme.QuoteTextColor
 import com.practicum.resp_toi_app.ui.theme.backgroundCardColor
 import com.practicum.resp_toi_app.ui.theme.cardActiveLighterBackground
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
@@ -282,6 +284,17 @@ fun RenderSettingsScreen(viewModel: MainViewModel, snackBar: SnackbarHostState) 
                         Text(
                             modifier = Modifier.padding(top = 14.dp),
                             text = stringResource(id = R.string.settings_menu_how_it_works_description),
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = stringResource(id = R.string.settings_menu_how_it_works_quote_header),
+                            color = QuoteTextColor,
+                            fontWeight = FontWeight.SemiBold,
+                            fontStyle = FontStyle.Italic
+                        )
+                        Text(
+                            text = stringResource(id = R.string.settings_menu_how_it_works_quote),
                             color = Color.White,
                             fontSize = 14.sp
                         )
