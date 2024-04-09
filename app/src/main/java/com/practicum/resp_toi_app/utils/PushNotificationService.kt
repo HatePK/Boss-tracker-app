@@ -37,7 +37,7 @@ class PushNotificationService: FirebaseMessagingService() {
             }
 
             val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                fullScreenIntent, PendingIntent.FLAG_IMMUTABLE)
 
             var builder = NotificationCompat.Builder(this, "Default")
                 .setSmallIcon(R.drawable.ic_home)
