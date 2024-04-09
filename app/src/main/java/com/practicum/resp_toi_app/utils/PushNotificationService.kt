@@ -20,16 +20,24 @@ class PushNotificationService: FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+
+        Log.d("ABOBA", token)
+        SharedPreferencesManager.saveString("Token", token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
         message.data.let {
             val oneTimeID = SystemClock.uptimeMillis().toInt()
 
-            val fullScreenIntent = Intent(this, NotificationActivity::class.java)
+            val fullScreenIntent = Intent(this, NotificationActivity::class.java).apply {
+                putExtra("title", it["title"])
+                putExtra("body", it["body"])
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
 
             val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-                fullScreenIntent, PendingIntent.FLAG_IMMUTABLE)
+                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
             var builder = NotificationCompat.Builder(this, "Default")
                 .setSmallIcon(R.drawable.ic_home)

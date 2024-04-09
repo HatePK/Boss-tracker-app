@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 interface BossesRepository {
     fun getBossesInfo(server: ServerEntity): Flow<Resource<List<BossEntity>>>
     fun getAlarmsInfo(userId: String): Flow<Resource<List<AlarmEntity>>>
+    fun getServerList(): Flow<Resource<List<ServerEntity>>>
+    suspend fun setTestCall(userId: String): Response
     suspend fun setAlarm(userId: String, server: ServerEntity, bossName: String): Response
     suspend fun deleteAlarm(userId: String, server: ServerEntity, bossName: String): Response
 

@@ -12,6 +12,9 @@ import com.practicum.resp_toi_app.data.dto.alarms.DeleteAlarmRequest
 import com.practicum.resp_toi_app.data.dto.alarms.GetAlarmsRequest
 import com.practicum.resp_toi_app.data.dto.alarms.GetAlarmsResponse
 import com.practicum.resp_toi_app.data.dto.alarms.SetAlarmRequest
+import com.practicum.resp_toi_app.data.dto.alarms.TestCallRequest
+import com.practicum.resp_toi_app.data.dto.getServerList.ServerListRequest
+import com.practicum.resp_toi_app.data.dto.getServerList.ServerListResponse
 import com.practicum.resp_toi_app.domain.entity.ServerEntity
 import java.io.EOFException
 
@@ -22,15 +25,38 @@ class RetrofitNetworkClient(private val context: Context, private val api: RespT
         }
         if (dto is BossesRequest) {
             return try {
-                val response  = when (dto.server) {
-                    ServerEntity.X1 -> BossesResponse(api.x1Bosses())
-                    ServerEntity.X15 -> BossesResponse(api.x15Bosses())
-                    ServerEntity.X5 -> BossesResponse(api.x5Bosses())
-                }
+                Log.d("ABOBA", dto.route)
+                val response = BossesResponse(api.getBosses(dto.route))
                 response.apply { resultCode = 200 }
             } catch (e: Throwable) {
                 Log.d("ABOBA", e.message.toString())
                 Response().apply { resultCode = 500 }
+            }
+        }
+
+        if (dto is ServerListRequest) {
+            return try {
+                val response = ServerListResponse(api.getServerList())
+                Log.d("ABOBA", response.serverList.toString())
+                response.apply { resultCode = 200 }
+            } catch (e: Throwable) {
+                Log.d("ABOBA", e.message.toString())
+                Response().apply { resultCode = 500 }
+            }
+        }
+
+        if (dto is TestCallRequest) {
+            return try {
+                val callObject = object {
+                    val userId = dto.userId
+                }
+                val response = api.testCall(callObject)
+                response.apply { resultCode = 201 }
+            } catch (e: EOFException) {
+                Response().apply { resultCode = 201 }
+            } catch (e: Throwable) {
+                Log.d("ABOBA", e.toString())
+                Response().apply { resultCode = 400 }
             }
         }
 

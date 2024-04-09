@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.practicum.resp_toi_app.ui.theme.ProgressBarColor
 import com.practicum.resp_toi_app.ui.theme.gradientBackGroundBrush
 
 @Composable
@@ -17,6 +18,6 @@ fun RenderMainLoading() {
         modifier = Modifier.fillMaxSize().background(brush = gradientBackGroundBrush),
         contentAlignment = Alignment.Center
         ) {
-        CircularProgressIndicator(modifier = Modifier.size(40.dp))
+        CircularProgressIndicator(modifier = Modifier.size(40.dp), color = ProgressBarColor)
     }
 }

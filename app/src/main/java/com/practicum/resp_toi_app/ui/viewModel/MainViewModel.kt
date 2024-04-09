@@ -1,5 +1,6 @@
 package com.practicum.resp_toi_app.ui.viewModel
 
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.practicum.resp_toi_app.domain.entity.BossEntity
 import com.practicum.resp_toi_app.domain.entity.ServerEntity
 import com.practicum.resp_toi_app.utils.Resource
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
+import com.practicum.resp_toi_app.utils.functions.refreshFcmToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -27,11 +30,23 @@ class MainViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
-    private val _server = MutableStateFlow(ServerEntity.X5)
+    private val _serverList = MutableStateFlow<List<ServerEntity>>((listOf()))
+    val serverList: StateFlow<List<ServerEntity>> = _serverList
+
+    private val _server = MutableStateFlow(SharedPreferencesManager.getServer())
     val server: StateFlow<ServerEntity> = _server
 
     private val _alarmsState = MutableStateFlow<AlarmsState>(AlarmsState.Loading)
     val alarmsState: StateFlow<AlarmsState> = _alarmsState
+
+    private val _testCallTimer = MutableStateFlow("30")
+    val testCallTimer: StateFlow<String> = _testCallTimer
+
+    private val _testCallState = MutableStateFlow<TestCallState>(TestCallState.EnabledFirstTime)
+    val testCallState: StateFlow<TestCallState> = _testCallState
+
+    private val _showXiaomiBottomSheet = MutableStateFlow(false)
+    val showXiaomiBottomSheet: StateFlow<Boolean> = _showXiaomiBottomSheet
 
     private var job: Job? = null
 
@@ -45,14 +60,19 @@ class MainViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val token = SharedPreferencesManager.getString("Token", "")
-
             delay(500)
 
+            var token = SharedPreferencesManager.getString("Token", "")
             val map = mutableMapOf<String, OneAlarmState>()
 
             bosses.forEach{
                 map[it.name] = OneAlarmState.Loading
+            }
+
+            while (token == "") {
+                refreshFcmToken()
+                delay(2000)
+                token = SharedPreferencesManager.getString("Token", "")
             }
 
             bossesInteractor.getAlarmsInfo(token).collect {alarms ->
@@ -64,7 +84,7 @@ class MainViewModel @Inject constructor(
                         map[it.key] = OneAlarmState.Content(false)
                     }
 
-                    alarms.filter{it.server == server.value}.forEach{
+                    alarms.filter{it.server == server.value.name}.forEach{
                         map[it.bossName] = OneAlarmState.Content(true)
                     }
 
@@ -76,8 +96,44 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun setTestCall() {
+        viewModelScope.launch {
+            _testCallState.value = TestCallState.Loading
+            val token = SharedPreferencesManager.getString("Token", "")
+            delay(500)
+            val response = bossesInteractor.setTestCall(token)
+
+            when (response) {
+                is Resource.Success -> {
+                    _testCallState.value = TestCallState.InProcess
+                    object: CountDownTimer(30000, 1000) {
+                        override fun onTick(msLost: Long) {
+                            if (msLost > 10000) {
+                                _testCallTimer.value = (msLost / 1000).toString()
+                            } else {
+                                _testCallTimer.value = "0${msLost / 1000}"
+                            }
+                        }
+                        override fun onFinish() {
+                            _testCallTimer.value = "30"
+                            _testCallState.value = TestCallState.EnabledAfterUse
+                        }
+                    }.start()
+                }
+                is Resource.Error -> {
+                    _testCallState.value = TestCallState.Error(response.message)
+                }
+            }
+        }
+    }
+
+    fun errorMessageShown() {
+        _testCallState.value = TestCallState.EnabledAfterUse
+    }
+
     fun setServer(serverEntity: ServerEntity) {
         _server.value = serverEntity
+        SharedPreferencesManager.saveServer(serverEntity)
         _alarmsState.value = AlarmsState.Loading
         getInfo()
     }
@@ -99,11 +155,15 @@ class MainViewModel @Inject constructor(
                 bossName = boss
             )
 
-            val dataSet = newSet.toMutableMap()
+            val dataSet = (_alarmsState.value as AlarmsState.Content).alarms.toMutableMap()
 
             when (response) {
                 is Resource.Success -> {
+                    val isShowBsAvailable = SharedPreferencesManager.getBoolean(SharedPreferencesManager.XIAOMI_BS, true)
                     dataSet[boss] = OneAlarmState.Content(true)
+                    if (isShowBsAvailable) {
+                        _showXiaomiBottomSheet.value = true
+                    }
                 }
                 is Resource.Error -> {
                     dataSet[boss] = OneAlarmState.Error
@@ -112,6 +172,15 @@ class MainViewModel @Inject constructor(
 
             _alarmsState.value = AlarmsState.Content(dataSet)
         }
+    }
+
+    fun closeXiaomiBottomSheet() {
+        _showXiaomiBottomSheet.value = false
+    }
+
+    fun stopShowXiaomiBottomSheet() {
+        SharedPreferencesManager.saveBoolean(SharedPreferencesManager.XIAOMI_BS, false)
+        _showXiaomiBottomSheet.value = false
     }
 
     fun deleteAlarm(boss: String) {
@@ -131,7 +200,7 @@ class MainViewModel @Inject constructor(
                 bossName = boss
             )
 
-            val dataSet = newSet.toMutableMap()
+            val dataSet = (_alarmsState.value as AlarmsState.Content).alarms.toMutableMap()
 
             when (response) {
                 is Resource.Success -> {
@@ -149,10 +218,16 @@ class MainViewModel @Inject constructor(
 
     fun refresh() {
         _isRefreshing.value = true
-        _alarmsState.value = AlarmsState.Loading
+
+        if (stateLiveData.value is MainState.Error) {
+            _stateLiveData.value = MainState.Loading
+        } else if (stateLiveData.value is MainState.Content) {
+            _alarmsState.value = AlarmsState.Loading
+        }
 
         viewModelScope.launch {
             delay(500)
+            getServersList()
             loadData()
 
             _isRefreshing.value = false
@@ -163,8 +238,17 @@ class MainViewModel @Inject constructor(
         _stateLiveData.value = MainState.Loading
 
         viewModelScope.launch {
+            getServersList()
             delay(1000)
             loadData()
+        }
+    }
+
+    private suspend fun getServersList() {
+        bossesInteractor.getServerList().collect {
+            it?.let {
+                _serverList.value = it
+            }
         }
     }
 

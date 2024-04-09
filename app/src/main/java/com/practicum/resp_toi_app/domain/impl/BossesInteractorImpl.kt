@@ -39,6 +39,29 @@ class BossesInteractorImpl(
         }
     }
 
+    override fun getServerList(): Flow<List<ServerEntity>?> {
+        return bossesRepository.getServerList().map { result ->
+            when (result) {
+                is Resource.Success -> {
+                    result.data
+                }
+                is Resource.Error -> {
+                    null
+                }
+            }
+        }
+    }
+
+    override suspend fun setTestCall(userId: String): Resource<String> {
+        val response = bossesRepository.setTestCall(userId)
+        Log.d("ABOBA", response.resultCode.toString())
+
+        return when (response.resultCode) {
+            201 -> Resource.Success()
+            else -> Resource.Error("Ошибка при обработке запроса")
+        }
+    }
+
     override suspend fun setAlarm(userId: String, server: ServerEntity, bossName: String): Resource<String> {
         val response = bossesRepository.setAlarm(userId, server, bossName)
         Log.d("ABOBA", response.resultCode.toString())

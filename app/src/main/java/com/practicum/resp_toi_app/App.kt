@@ -7,11 +7,9 @@ import android.app.NotificationManager
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.Vibrator
-import android.util.Log
-import androidx.core.app.NotificationCompat.NotificationVisibility
-import com.google.firebase.messaging.FirebaseMessaging
+import com.practicum.resp_toi_app.utils.FormatTimezoneManager
 import com.practicum.resp_toi_app.utils.SharedPreferencesManager
+import com.practicum.resp_toi_app.utils.functions.refreshFcmToken
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -19,18 +17,11 @@ import dagger.hilt.android.HiltAndroidApp
 class App: Application() {
     override fun onCreate() {
         super.onCreate()
+
         SharedPreferencesManager.init(this)
+        FormatTimezoneManager.init()
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@addOnCompleteListener
-            }
-
-            val token = task.result
-            Log.d("ABOBA", token)
-
-            SharedPreferencesManager.saveString("Token", token)
-        }
+        refreshFcmToken()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val audioAttributes = AudioAttributes.Builder()
@@ -38,7 +29,7 @@ class App: Application() {
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build()
 
-            val uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM)
+            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
 
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val mChannel = NotificationChannel("Default", "Будильник", NotificationManager.IMPORTANCE_HIGH)
