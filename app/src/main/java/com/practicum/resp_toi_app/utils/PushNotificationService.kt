@@ -30,8 +30,8 @@ class PushNotificationService: FirebaseMessagingService() {
             val oneTimeID = SystemClock.uptimeMillis().toInt()
 
             val fullScreenIntent = Intent(this, NotificationActivity::class.java).apply {
-                putExtra("title", "CABRIO\nтолько что убили\n")
-                putExtra("body", "Сундук появился!")
+                putExtra("title", it["title"])
+                putExtra("body", it["body"])
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
