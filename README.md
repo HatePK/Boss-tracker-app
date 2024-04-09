@@ -10,7 +10,10 @@ Language: RU / [EN](https://github.com/HatePK/Boss-tracker-app/blob/master/READM
 **Стэк:** Compose, Firebase, hilt, retrofit2
 
 ## Установка
-Приложение в процессе разработки. Для запуска в Android Studio скопируйте: 
+[![APK Download](https://img.shields.io/badge/APK-Download-brightgreen?logo=android)](https://github.com/HatePK/Boss-tracker-app/releases/download/v1.0.0/release.apk)
+
+Запуск проекта в Android Studio
+
 ```bash
 https://github.com/HatePK/Boss-tracker-app.git
 ```
