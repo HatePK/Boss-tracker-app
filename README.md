@@ -20,6 +20,6 @@ https://github.com/HatePK/Boss-tracker-app.git
     
 ## Скриншоты
 <p float="left">
-    <img src="https://github.com/HatePK/Boss-tracker-app/blob/master/Screenshot_20240320_023617.png" width="250"> 
+    <img src="https://github.com/HatePK/Boss-tracker-app/blob/master/Screenshot_20240410_005342.png" width="250"> 
     <img src="https://github.com/HatePK/Boss-tracker-app/blob/master/Screenshot_20240320_023827.png" width="250"> 
 </p> 
