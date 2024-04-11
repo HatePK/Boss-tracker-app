@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -44,6 +45,8 @@ fun RenderDisabledCard(
     snackBar: SnackbarHostState,
     cardPadding: PaddingValues
 ) {
+    val context = LocalContext.current
+
     ElevatedCard(
         colors = CardDefaults.cardColors(
             containerColor = cardNoActiveAlarmBackground,
@@ -86,7 +89,7 @@ fun RenderDisabledCard(
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(fontSize = 16.sp),
                 color = TextNoActive,
-                text = "${stringResource(id = R.string.card_resp_begin_after_message)} ${countTimeBeforeResp(item.timeFromDeath)}"
+                text = "${stringResource(id = R.string.card_resp_begin_after_message)} ${countTimeBeforeResp(item.timeFromDeath, context)}"
             )
         }
         Row(

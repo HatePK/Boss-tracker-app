@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,6 +57,8 @@ fun RenderActiveCard(
     val progressPercentage by remember {
         mutableFloatStateOf(countPercentage(item.timeFromDeath))
     }
+
+    val context = LocalContext.current
 
     ElevatedCard(
         colors = CardDefaults.cardColors(
@@ -106,7 +109,7 @@ fun RenderActiveCard(
                         modifier = Modifier.padding(top = 18.dp),
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White,
-                        text = "${stringResource(R.string.card_resp_on_untill_message)} ${countTimeBeforeResp(item.timeFromDeath)}"
+                        text = "${stringResource(R.string.card_resp_on_untill_message)} ${countTimeBeforeResp(item.timeFromDeath, context)}"
                     )
                 }
                 Box(
@@ -126,7 +129,7 @@ fun RenderActiveCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = stringResource(R.string.card_resp_on_message),
+                            text = stringResource(R.string.card_resp_on_message_circle),
                             style = TextStyle(fontSize = 12.sp),
                             color = Color.White
                         )
@@ -134,7 +137,8 @@ fun RenderActiveCard(
                             modifier = Modifier.padding(top = 3.dp),
                             text = countTimeFromRespStarted(
                                 timeFromDeath = item.timeFromDeath,
-                                textFormat = false
+                                textFormat = false,
+                                context = context
                             ),
                             style = TextStyle(
                                 fontSize = 28.sp,

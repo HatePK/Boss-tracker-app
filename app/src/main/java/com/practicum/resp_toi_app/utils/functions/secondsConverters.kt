@@ -1,6 +1,9 @@
 package com.practicum.resp_toi_app.utils.functions
 
-fun countTimeBeforeResp(timeFromDeath: Int): String {
+import android.content.Context
+import com.practicum.resp_toi_app.R
+
+fun countTimeBeforeResp(timeFromDeath: Int, context: Context): String {
     val hours: Int
     val minutes: Int
 
@@ -12,7 +15,7 @@ fun countTimeBeforeResp(timeFromDeath: Int): String {
         minutes = (1080 - timeFromDeath) % 60
     }
 
-    return "$hours часов $minutes минут"
+    return "$hours ${context.applicationContext.getString(R.string.card_hours)} $minutes ${context.applicationContext.getString(R.string.card_mins)}"
 }
 
 fun countPercentage(timeFromDeath: Int): Float {
@@ -21,19 +24,20 @@ fun countPercentage(timeFromDeath: Int): Float {
 
 fun countTimeFromRespStarted(
     timeFromDeath: Int,
-    textFormat: Boolean
+    textFormat: Boolean,
+    context: Context
 ) : String {
     val hours = (timeFromDeath - 1080) / 60
     val minutes = (timeFromDeath - 1080) % 60
 
     return if (textFormat) {
-        "$hours часов ${
+        "$hours ${context.applicationContext.getString(R.string.card_hours)} ${
             if (minutes < 10) {
                 "0$minutes"
             } else {
                 minutes
             }
-        } минут"
+        } ${context.applicationContext.getString(R.string.card_mins)}"
     } else {
         "$hours : ${
             if (minutes < 10) {
