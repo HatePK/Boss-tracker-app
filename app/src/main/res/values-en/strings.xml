@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Boss Tracker</string>
+    <string name="main_comment">Page updates automatically every minute. To force refresh, swipe up.</string>
+    <string name="main_comment_timezone">Time is shown in your time zone: </string>
+
+    <string name="error_notifications_disabled_message">Error: Alarm cannot be set without notification permission</string>
+    <string name="test_call_server_error">Error sending request to the server</string>
+
+    <string name="test_call_button_state_loading">Sending request...</string>
+    <string name="test_call_button_state_close_app">Close the app</string>
+    <string name="test_call_button_state_try_again">Try again</string>
+    <string name="test_call_button_state_ready_to_launch">Launch</string>
+
+    <string name="about_header">Hello!</string>
+    <string name="about_first">My name is Dima, I\'m a beginner Android developer. I made this app as a learning project to gain some experience 🙂</string>
+    <string name="about_second">Please rate it on Google Play and on my GitHub page, it would greatly help me in my portfolio.</string>
+    <string name="github_link_name">Star on GitHub</string>
+
+    <string name="alert_dialog_notifications_header">Notification Permission Denied</string>
+    <string name="alert_dialog_notifications_description">To set an alarm, go to settings and grant permission</string>
+    <string name="alert_dialog_to_settings_button">Go to Settings</string>
+    <string name="alert_dialog_refuse">Refuse</string>
+
+    <string name="settings_menu_button_how_it_works">How does it work?</string>
+    <string name="settings_menu_button_test_call">Test Alarm</string>
+    <string name="settings_menu_button_telegram">Write in Telegram</string>
+    <string name="settings_menu_button_compact_mode">Compact Mode</string>
+    <string name="settings_menu_how_it_works_description">If the alarm is on, you\'ll receive a "call" to your smartphone after the raid boss is defeated. You\'ll have up to three minutes to complete the quest.\n</string>
+    <string name="settings_menu_how_it_works_quote_header">Why didn\'t I receive a call or received it with delay?\n</string>
+    <string name="settings_menu_how_it_works_quote">From the server side, information is usually sent within the first minute, but there may be additional delays on the Android side with receiving the notification.\n\nSome Android smartphones may enter Doze mode to save resources, and the notification check interval is increased. To increase the chance of receiving the call instantly, I recommend keeping the phone charged.</string>
+
+
+    <string name="xiaomi_permission_alert_header">Xiaomi Phones Require Special Permission</string>
+    <string name="xiaomi_permission_alert_button">Enable</string>
+
+    <string name="xiaomi_permission_explain_header">Looks like you have a Xiaomi</string>
+    <string name="xiaomi_permission_explain_description">The alarm may not appear on the locked screen. Enable the "Lock screen" permission for everything to work correctly.</string>
+    <string name="xiaomi_permission_explain_move_to_settings_button">Grant Permission</string>
+
+    <string name="test_call_description">30 seconds after launch, you\'ll receive a test alarm on your phone. To make sure everything is working correctly, completely close the app and lock the screen.</string>
+
+    <string name="refresh">Refresh</string>
+
+    <string name="notification_title">RESP-TOI</string>
+    <string name="notification_description">Notification of RB\'s death</string>
+    <string name="notification_button_hide">Hide Notification</string>
+
+    <string name="card_resp_on_message">Respawn is already ongoing</string>
+    <string name="card_resp_on_message_circle">Ongoing</string>
+    <string name="card_resp_on_untill_message">Until the end</string>
+    <string name="card_resp_begin_after_message">Respawn will start in</string>
+    <string name="card_alarm_error">Err</string>
+    <string name="card_hours">hrs</string>
+    <string name="card_mins">mins</string>
+    <string name="card_MSK">MSK</string>
+
+    <string name="server">Server</string>
+    <string name="settings">Settings</string>
+</resources>

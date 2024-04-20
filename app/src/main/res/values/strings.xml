@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Resp-toi App</string>
+    <string name="app_name">Boss Tracker</string>
     <string name="main_comment">Страница обновляется автоматически раз в минуту. Чтобы обновить принудительно, потяните вверх.</string>
     <string name="main_comment_timezone">Время показывается в вашем часовом поясе: </string>
 
@@ -46,10 +46,14 @@
     <string name="notification_button_hide">Скрыть уведомление</string>
 
     <string name="card_resp_on_message">Респ идёт уже</string>
+    <string name="card_resp_on_message_circle">Респ идёт уже</string>
     <string name="card_resp_on_untill_message">До конца</string>
     <string name="card_resp_begin_after_message">Респ начнется через</string>
     <string name="card_alarm_error">Err</string>
+    <string name="card_hours">часов</string>
+    <string name="card_mins">минут</string>
     <string name="card_MSK">МСК</string>
 
-
+    <string name="server">Сервер</string>
+    <string name="settings">Настройки</string>
 </resources>

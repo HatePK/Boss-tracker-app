@@ -22,12 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.practicum.resp_toi_app.R
 import com.practicum.resp_toi_app.ui.parts.ExposedMenu
 import com.practicum.resp_toi_app.ui.theme.BottomNavColor
 import com.practicum.resp_toi_app.ui.theme.TextNoActive
@@ -82,7 +84,10 @@ fun BottomNavigationBar(navController: NavController, viewModel: MainViewModel) 
                         }
                     }},
                 label = {
-                    Text(text = item.label)
+                    when (item) {
+                        is BottomNavItem.server -> Text(text = stringResource(id = R.string.server))
+                        is BottomNavItem.settings -> Text(text = stringResource(id = R.string.settings))
+                    }
                 }
             )
         }

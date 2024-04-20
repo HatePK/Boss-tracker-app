@@ -36,7 +36,7 @@ class PushNotificationService: FirebaseMessagingService() {
                 addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
 
-            val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
+            val fullScreenPendingIntent = PendingIntent.getActivity(this, oneTimeID,
                 fullScreenIntent, PendingIntent.FLAG_IMMUTABLE)
 
             var builder = NotificationCompat.Builder(this, "Default")

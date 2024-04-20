@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -51,6 +52,8 @@ fun RenderActiveCardSmall(
     val progressPercentage by remember {
         mutableFloatStateOf(countPercentage(item.timeFromDeath))
     }
+
+    val context = LocalContext.current
 
     ElevatedCard(
         modifier = Modifier
@@ -98,7 +101,8 @@ fun RenderActiveCardSmall(
                         color = Color.White,
                         text = "${stringResource(R.string.card_resp_on_message)} ${countTimeFromRespStarted(
                             timeFromDeath = item.timeFromDeath,
-                            textFormat = true
+                            textFormat = true,
+                            context = context
                         )}"
                     )
                 }
