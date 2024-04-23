@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Boss Tracker</string>
     <string name="main_comment">Страница обновляется автоматически раз в минуту. Чтобы обновить принудительно, потяните вверх.</string>
-    <string name="main_comment_timezone">Время показывается в вашем часовом поясе: </string>
+    <string name="main_comment_timezone">Часовой пояс: </string>
 
     <string name="error_notifications_disabled_message">Ошибка: будильник не может быть установлен без разрешения на отправку уведомлений</string>
     <string name="test_call_server_error">Ошибка при отправке запроса на сервер</string>
