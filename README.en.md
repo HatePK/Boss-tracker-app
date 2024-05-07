@@ -10,7 +10,10 @@ Notifications are sent via Firebase Cloud Messaging (GCM). The backend is writte
 **Stack:** Compose, Firebase, hilt, retrofit2
 
 ## Installation
-The application is under development. To run in Android Studio, copy:
+
+<a href='https://play.google.com/store/apps/details?id=com.practicum.resp_toi_app&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' width="200" src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+
+To run in Android Studio, copy:
 ```bash
 https://github.com/HatePK/Boss-tracker-app.git
 ```
