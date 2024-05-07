@@ -12,9 +12,7 @@ Language: RU / [EN](https://github.com/HatePK/Boss-tracker-app/blob/master/READM
 **Стэк:** Compose, Firebase, hilt, retrofit2, MVVM, LiveData, Flow, ViewModel
 
 ## Установка
-<a class="google_play_button-mobile" target="_blank" href='https://play.google.com/store/apps/details?id=com.practicum.resp_toi_app'>
-    <img alt='Доступно в Google Play' class="banner_image" width="160" src='/img/ru_badge_web_generic.png'/>
-</a>
+<a href='https://play.google.com/store/apps/details?id=com.practicum.resp_toi_app&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
 Запуск проекта в Android Studio
 
