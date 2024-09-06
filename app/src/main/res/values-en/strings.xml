@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Boss Tracker</string>
     <string name="main_comment">Page updates automatically every minute. To force refresh, swipe up.</string>
-    <string name="main_comment_timezone">Time is shown in your time zone: </string>
+    <string name="main_comment_timezone">Time zone: </string>
 
     <string name="error_notifications_disabled_message">Error: Alarm cannot be set without notification permission</string>
     <string name="test_call_server_error">Error sending request to the server</string>

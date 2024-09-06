@@ -66,13 +66,7 @@ fun RenderMainContent(
         ) {
             item {
                 Text(
-                    modifier = Modifier.padding(5.dp, top = 10.dp, bottom = 6.dp),
-                    text = stringResource(id = R.string.main_comment),
-                    style = TextStyle(fontSize = 14.sp),
-                    color = TextNoActive
-                )
-                Text(
-                    modifier = Modifier.padding(5.dp, bottom = 10.dp),
+                    modifier = Modifier.padding(5.dp, top = 10.dp, bottom = 10.dp),
                     text = "${stringResource(id = R.string.main_comment_timezone)} ${TimeZone.getDefault().id}",
                     style = TextStyle(fontSize = 14.sp),
                     color = TextNoActive
