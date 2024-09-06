@@ -32,14 +32,22 @@ class BossesRepositoryImpl(
                 emit(Resource.Error("Проверьте подключение к интернету"))
             }
             200 -> {
-                emit(Resource.Success((response as BossesResponse).results.map {
-                    BossEntity(
-                        it.name,
-                        it.respStart,
-                        it.respEnd,
-                        it.timeFromDeath
-                    )
-                }))
+                try {
+                    val bossesResponse = (response as BossesResponse).results
+
+                    bossesResponse?.let { res ->
+                        emit(Resource.Success(res.map {
+                            BossEntity(
+                                it.name,
+                                it.respStart,
+                                it.respEnd,
+                                it.timeFromDeath
+                            )
+                        }))
+                    }
+                } catch (e: Exception) {
+                    emit(Resource.Error("Ошибка\n\nВозможно, информации о РБ пока нет или сервер не отвечает."))
+                }
             }
             else -> {
                 emit(Resource.Error("Ошибка сервера"))

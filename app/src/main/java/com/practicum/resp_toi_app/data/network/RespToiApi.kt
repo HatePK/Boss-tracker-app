@@ -21,7 +21,7 @@ interface RespToiApi {
 //    suspend fun x15Bosses(): ArrayList<BossDto>
 
     @GET("/{route}")
-    suspend fun getBosses(@Path("route") route: String): ArrayList<BossDto>
+    suspend fun getBosses(@Path("route") route: String): ArrayList<BossDto>?
 
     @GET("/get-server-list")
     suspend fun getServerList(): ArrayList<ServerDto>

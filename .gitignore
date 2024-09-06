@@ -14,3 +14,5 @@
 .cxx
 local.properties
 /.idea/other.xml
+/app/debug/app-debug.aab
+/app/release/app-release.aab
